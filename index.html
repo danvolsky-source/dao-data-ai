@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO Analytics Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0B1020;
+            color: #E6ECF5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(9, 234, 180, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #09EAB4;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #B8C5DB;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #09EAB4;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #B8C5DB;
+            margin-bottom: 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
+            color: #0B1020;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(9, 234, 180, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: linear-gradient(180deg, #0B1020 0%, #111827 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(9, 234, 180, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(9, 234, 180, 0.5);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #E6ECF5;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: #B8C5DB;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .stat-item {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: #09EAB4;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #B8C5DB;
+            font-size: 16px;
+        }
+
+        /* API Section */
+        .api-section {
+            padding: 80px 0;
+            background: linear-gradient(180deg, #111827 0%, #1E293B 100%);
+        }
+
+        .api-code {
+            background: #0B1020;
+            border: 1px solid rgba(9, 234, 180, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+
+        .api-code pre {
+            color: #09EAB4;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(9, 234, 180, 0.1);
+            color: #B8C5DB;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #E6ECF5;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #B8C5DB;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .features-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">DAO Analytics</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#stats">Stats</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Real-Time DAO Analytics</h1>
+            <p class="subtitle">Track proposals, votes, delegates, and discussions across DAOs in real-time</p>
+            <a href="#api" class="cta-button">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to analyze DAO governance</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Real-Time Tracking</h3>
+                    <p class="feature-description">Monitor proposals, votes, and delegate activity in real-time with instant updates.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">AI Analytics</h3>
+                    <p class="feature-description">Advanced sentiment analysis and predictive insights powered by AI.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3 class="feature-title">Multi-Chain Support</h3>
+                    <p class="feature-description">Track governance across multiple blockchain networks seamlessly.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3 class="feature-title">API Access</h3>
+                    <p class="feature-description">RESTful API for easy integration with your applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <h2 class="section-title">Platform Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="proposals-count">0</div>
+                    <div class="stat-label">Active Proposals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="votes-count">0</div>
+                    <div class="stat-label">Total Votes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="delegates-count">0</div>
+                    <div class="stat-label">Active Delegates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="threads-count">0</div>
+                    <div class="stat-label">Discussions</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Section -->
+    <section class="api-section" id="api">
+        <div class="container">
+            <h2 class="section-title">Easy API Integration</h2>
+            <p class="section-subtitle">Start building with our RESTful API in minutes</p>
+            
+            <div class="api-code">
+                <pre>
+// Get all proposals
+fetch('https://your-api.com/api/proposals')
+  .then(res => res.json())
+  .then(data => console.log(data));
+
+// Create a new vote
+fetch('https://your-api.com/api/votes', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    proposal_id: 'prop_123',
+    voter_address: '0x...',
+    vote_choice: 'for',
+    voting_power: 1000
+  })
+});
+                </pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 DAO Analytics Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Fetch real-time stats from API
+        async function fetchStats() {
+            try {
+                const API_BASE = 'https://your-backend-api.com';
+                
+                // Fetch proposals
+                const proposalsRes = await fetch(`${API_BASE}/api/proposals`);
+                const proposalsData = await proposalsRes.json();
+                document.getElementById('proposals-count').textContent = proposalsData.data?.length || 0;
+                
+                // Fetch votes
+                const votesRes = await fetch(`${API_BASE}/api/votes?limit=1000`);
+                const votesData = await votesRes.json();
+                document.getElementById('votes-count').textContent = votesData.data?.length || 0;
+                
+                // Fetch delegates
+                const delegatesRes = await fetch(`${API_BASE}/api/delegates`);
+                const delegatesData = await delegatesRes.json();
+                document.getElementById('delegates-count').textContent = delegatesData.data?.length || 0;
+                
+                // Fetch threads
+                const threadsRes = await fetch(`${API_BASE}/api/threads`);
+                const threadsData = await threadsRes.json();
+                document.getElementById('threads-count').textContent = threadsData.data?.length || 0;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch stats on page load
+        fetchStats();
+        
+        // Refresh stats every 30 seconds
+        setInterval(fetchStats, 30000);
+    </script>
+</body>
+</html>
