@@ -6,7 +6,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 
 from backend.main import app
-from mangum import Mangum
 
-# Создаем handler для Vercel
-handler = Mangum(app, lifespan="off")
+# Vercel автоматически обнаруживает ASGI приложения
+app = app
