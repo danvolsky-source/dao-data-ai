@@ -106,6 +106,33 @@ async def get_proposal(proposal_id: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 # Votes endpoints
+
+# Stats endpoint
+@app.get("/api/stats")
+async def get_stats():
+    try:
+        # Get proposal count
+        proposals_result = supabase.table("snapshot_proposals").select("id", count="exact").execute()
+        proposals_count = proposals_result.count if proposals_result.count else 0
+        
+        # Get votes count
+        votes_result = supabase.table("snapshot_votes").select("id", count="exact").execute()
+        votes_count = votes_result.count if votes_result.count else 0
+        
+        # Get unique delegates count (unique voters)
+        delegates_result = supabase.table("snapshot_votes").select("voter").execute()
+        unique_delegates = len(set([v["voter"] for v in delegates_result.data])) if delegates_result.data else 0
+        
+        return {
+            "status": "success",
+            "data": {
+                "active_proposals": proposals_count,
+                "total_votes": votes_count,
+                "active_delegates": unique_delegates
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 @app.post("/api/votes")
 async def create_vote(vote: VoteCreate):
     try:
