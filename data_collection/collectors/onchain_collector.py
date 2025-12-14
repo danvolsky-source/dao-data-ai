@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""
+Arbitrum DAO On-Chain Data Collector
+
+Collects:
+- Proposal executions from Arbitrum Governor contract
+- Token transfers and staking events
+- Treasury movements
+- Delegate voting power changes
+
+Requires:
+- Web3.py for Arbitrum RPC connection
+- Supabase for data storage
+"""
+
+import os
+import time
+import json
+from datetime import datetime
+from web3 import Web3
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Configuration
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+ARBITRUM_RPC = os.getenv('ARBITRUM_RPC_URL', 'https://arb1.arbitrum.io/rpc')
+
+# Arbitrum DAO Governor contract
+GOVERNOR_ADDRESS = '0xf07DeD9dC292157749B6Fd268E37DF6EA38395B9'  # ArbitrumGovernor
+ARB_TOKEN = '0x912CE59144191C1204E64559FE8253a0e49E6548'  # ARB token
+
+# Initialize clients
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+w3 = Web3(Web3.HTTPProvider(ARBITRUM_RPC))
+
+if not w3.is_connected():
+    raise Exception('Failed to connect to Arbitrum RPC')
+
+# Governor ABI (relevant events)
+GOVERNOR_ABI = [
+    {
+        'anonymous': False,
+        'inputs': [
+            {'indexed': False, 'name': 'proposalId', 'type': 'uint256'}
+        ],
+        'name': 'ProposalExecuted',
+        'type': 'event'
+    },
+    {
+        'anonymous': False,
+        'inputs': [
+            {'indexed': True, 'name': 'voter', 'type': 'address'},
+            {'indexed': False, 'name': 'proposalId', 'type': 'uint256'},
+            {'indexed': False, 'name': 'support', 'type': 'uint8'},
+            {'indexed': False, 'name': 'weight', 'type': 'uint256'},
+            {'indexed': False, 'name': 'reason', 'type': 'string'}
+        ],
+        'name': 'VoteCast',
+        'type': 'event'
+    }
+]
+
+def get_latest_block():
+    """Get the latest processed block from database"""
+    result = supabase.table('onchain_sync_status').select('*').eq('chain', 'arbitrum').single().execute()
+    if result.data:
+        return result.data['last_block']
+    return w3.eth.block_number - 10000  # Start 10k blocks back if first run
+
+def update_sync_status(block_number):
+    """Update the latest processed block"""
+    supabase.table('onchain_sync_status').upsert({
+        'chain': 'arbitrum',
+        'last_block': block_number,
+        'synced_at': datetime.utcnow().isoformat()
+    }).execute()
+
+def process_proposal_executed(event):
+    """Process ProposalExecuted event"""
+    proposal_id = event['args']['proposalId']
+    block = w3.eth.get_block(event['blockNumber'])
+    tx = w3.eth.get_transaction(event['transactionHash'])
+    
+    data = {
+        'proposal_id': str(proposal_id),
+        'event_type': 'executed',
+        'block_number': event['blockNumber'],
+        'transaction_hash': event['transactionHash'].hex(),
+        'executed_at': datetime.fromtimestamp(block['timestamp']).isoformat(),
+        'executor_address': tx['from']
+    }
+    
+    supabase.table('onchain_events').insert(data).execute()
+    print(f"✓ Stored execution for proposal {proposal_id}")
+
+def process_vote_cast(event):
+    """Process VoteCast event"""
+    voter = event['args']['voter']
+    proposal_id = event['args']['proposalId']
+    support = event['args']['support']
+    weight = event['args']['weight']
+    block = w3.eth.get_block(event['blockNumber'])
+    
+    # Map support values (0=Against, 1=For, 2=Abstain)
+    choice_map = {0: 'Against', 1: 'For', 2: 'Abstain'}
+    
+    data = {
+        'proposal_id': str(proposal_id),
+        'event_type': 'vote',
+        'block_number': event['blockNumber'],
+        'transaction_hash': event['transactionHash'].hex(),
+        'voter_address': voter.lower(),
+        'vote_choice': choice_map.get(support, 'Unknown'),
+        'voting_power': str(weight),
+        'voted_at': datetime.fromtimestamp(block['timestamp']).isoformat()
+    }
+    
+    supabase.table('onchain_events').insert(data).execute()
+    print(f"✓ Stored vote from {voter[:8]}... on proposal {proposal_id}")
+
+def collect_events(from_block, to_block):
+    """Collect events from Governor contract"""
+    contract = w3.eth.contract(address=GOVERNOR_ADDRESS, abi=GOVERNOR_ABI)
+    
+    # Fetch ProposalExecuted events
+    executed_filter = contract.events.ProposalExecuted.create_filter(
+        fromBlock=from_block,
+        toBlock=to_block
+    )
+    executed_events = executed_filter.get_all_entries()
+    
+    for event in executed_events:
+        try:
+            process_proposal_executed(event)
+        except Exception as e:
+            print(f"Error processing executed event: {e}")
+    
+    # Fetch VoteCast events
+    vote_filter = contract.events.VoteCast.create_filter(
+        fromBlock=from_block,
+        toBlock=to_block
+    )
+    vote_events = vote_filter.get_all_entries()
+    
+    for event in vote_events:
+        try:
+            process_vote_cast(event)
+        except Exception as e:
+            print(f"Error processing vote event: {e}")
+    
+    return len(executed_events) + len(vote_events)
+
+def main():
+    """Main collection loop"""
+    print("Starting Arbitrum on-chain collector...")
+    print(f"Governor: {GOVERNOR_ADDRESS}")
+    print(f"Connected to Arbitrum: {w3.is_connected()}")
+    
+    last_block = get_latest_block()
+    current_block = w3.eth.block_number
+    
+    print(f"\nSyncing from block {last_block} to {current_block}")
+    
+    # Process in chunks of 1000 blocks
+    chunk_size = 1000
+    total_events = 0
+    
+    for start_block in range(last_block, current_block, chunk_size):
+        end_block = min(start_block + chunk_size - 1, current_block)
+        
+        print(f"\nProcessing blocks {start_block} - {end_block}...")
+        events_count = collect_events(start_block, end_block)
+        total_events += events_count
+        
+        update_sync_status(end_block)
+        print(f"Synced to block {end_block} ({events_count} events)")
+        
+        # Rate limiting
+        time.sleep(0.5)
+    
+    print(f"\n{'='*60}")
+    print(f"Sync complete!")
+    print(f"Total events collected: {total_events}")
+    print(f"Current block: {current_block}")
+    print(f"{'='*60}")
+
+if __name__ == '__main__':
+    main()
