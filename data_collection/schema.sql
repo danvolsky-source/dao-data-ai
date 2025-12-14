@@ -109,6 +109,44 @@ CREATE TABLE IF NOT EXISTS delegates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- On-Chain Executions Table
+CREATE TABLE IF NOT EXISTS onchain_executions (
+    id BIGSERIAL PRIMARY KEY,
+    proposal_id TEXT NOT NULL,
+    transaction_hash TEXT UNIQUE NOT NULL,
+    block_number BIGINT NOT NULL,
+    executor_address TEXT NOT NULL,
+    gas_used BIGINT,
+    gas_price TEXT,
+    executed_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- On-Chain Events Table (General)
+CREATE TABLE IF NOT EXISTS onchain_events (
+    id BIGSERIAL PRIMARY KEY,
+    proposal_id TEXT,
+    event_type TEXT NOT NULL, -- 'executed', 'vote', 'delegate', 'transfer'
+    block_number BIGINT NOT NULL,
+    transaction_hash TEXT NOT NULL,
+    voter_address TEXT,
+    vote_choice TEXT,
+    voting_power TEXT,
+    voted_at TIMESTAMP WITH TIME ZONE,
+    executor_address TEXT,
+    executed_at TIMESTAMP WITH TIME ZONE,
+    event_data JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- On-Chain Sync Status
+CREATE TABLE IF NOT EXISTS onchain_sync_status (
+    id BIGSERIAL PRIMARY KEY,
+    chain TEXT UNIQUE NOT NULL, -- 'arbitrum', 'ethereum'
+    last_block BIGINT NOT NULL,
+    synced_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Proposal Analytics (Aggregated)
 CREATE TABLE IF NOT EXISTS proposal_analytics (
   id BIGSERIAL PRIMARY KEY,
@@ -152,6 +190,10 @@ CREATE INDEX IF NOT EXISTS idx_forum_posts_created_at ON forum_posts(created_at 
 CREATE INDEX IF NOT EXISTS idx_snapshot_proposals_space ON snapshot_proposals(space);
 CREATE INDEX IF NOT EXISTS idx_snapshot_proposals_state ON snapshot_proposals(state);
 CREATE INDEX IF NOT EXISTS idx_snapshot_proposals_start ON snapshot_proposals(start DESC);
+CREATE INDEX IF NOT EXISTS idx_onchain_events_proposal_id ON onchain_events(proposal_id);
+CREATE INDEX IF NOT EXISTS idx_onchain_events_type ON onchain_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_onchain_events_block ON onchain_events(block_number);
+CREATE INDEX IF NOT EXISTS idx_onchain_executions_proposal_id ON onchain_executions(proposal_id);
 CREATE INDEX IF NOT EXISTS idx_snapshot_votes_proposal_id ON snapshot_votes(proposal_id);
 CREATE INDEX IF NOT EXISTS idx_snapshot_votes_voter ON snapshot_votes(voter);
 
@@ -170,6 +212,8 @@ ALTER TABLE forum_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE snapshot_proposals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE snapshot_votes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE onchain_executions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE onchain_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE onchain_sync_status ENABLE ROW LEVEL SECURITY;
 ALTER TABLE delegates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE proposal_analytics ENABLE ROW LEVEL SECURITY;
 
@@ -181,3 +225,5 @@ CREATE POLICY "Allow public read access" ON snapshot_votes FOR SELECT USING (tru
 CREATE POLICY "Allow public read access" ON onchain_executions FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON delegates FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON proposal_analytics FOR SELECT USING (true);
+CREATE POLICY "Allow public read access" ON onchain_events FOR SELECT USING (true);
+CREATE POLICY "Allow public read access" ON onchain_sync_status FOR SELECT USING (true);
