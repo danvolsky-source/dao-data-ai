@@ -8,7 +8,11 @@
     {
       "src": "index.html",
       "use": "@vercel/static"
-    }
+    },
+        {
+            "src": "proposal-detail.html",
+            "use": "@vercel/static"
+        }
   ],
   "routes": [
     {
