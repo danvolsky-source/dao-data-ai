@@ -135,8 +135,7 @@ async def get_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/voting-timeline")
-async deasync def get_voting_timeline():
-    try:
+async def get_voting_timeline():    try:
         # Get votes count per day for last 30 days
         result = supabase.table("votes").select("created_at").execute()
         
