@@ -116,7 +116,7 @@ async def get_stats():
         proposals_count = proposals_result.count if proposals_result.count else 0
         
         # Get votes count
-        votes_result = supabase.table("votes").select("id", count="exact").execute()
+        votes_result = supabase.table("votes").select("vote_id", count="exact").execute()
         votes_count = votes_result.count if votes_result.count else 0
         
         # Get unique delegates count (unique voters)
