@@ -155,7 +155,7 @@ def store_proposal(proposal: Dict) -> bool:
             "strategies": proposal.get("strategies", []),
         }
         
-        result = supabase.table("snapshot_proposals").upsert(data).execute()
+        result = supabase.table("proposals").upsert(data).execute()
         return True
     except Exception as e:
         print(f"Error storing proposal {proposal['id']}: {e}")
@@ -177,7 +177,7 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
             "created_at": datetime.fromtimestamp(vote["created"]).isoformat(),
         }
         
-        result = supabase.table("snapshot_votes").upsert(data).execute()
+        result = supabase.table("votes").upsert(data).execute()
         return True
     except Exception as e:
         print(f"Error storing vote {vote['id']}: {e}")
@@ -256,7 +256,7 @@ def collect_all_votes() -> int:
     print("Fetching proposals from database...")
     
     try:
-        result = supabase.table("snapshot_proposals").select("proposal_id").execute()
+        result = supabase.table("proposals").select("proposal_id").execute()
         proposals = result.data
         
         total_votes = 0
