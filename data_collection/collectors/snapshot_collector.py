@@ -146,7 +146,8 @@ def store_proposal(proposal: Dict) -> bool:
             "source": "snapshot",        }
         
         result = supabase.table("proposals").upsert(data, on_conflict="proposal_id").execute()
-        return True    except Exception as e:
+                return True
+            except Exception as e:
         print(f"Error storing proposal {proposal['id']}: {e}")
         return False
 
@@ -166,7 +167,8 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
             "created_at": datetime.fromtimestamp(vote["created"]).isoformat(),
         }
         
-        result = supabase.table("votes").upsert(data, on_conflict="vote_id").execute()        return True
+        result = supabase.table("votes").upsert(data, on_conflict="vote_id").execute()
+        return True
     except Exception as e:
         print(f"Error storing vote {vote['id']}: {e}")
         return False
