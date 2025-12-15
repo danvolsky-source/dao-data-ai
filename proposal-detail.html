@@ -267,12 +267,12 @@
             try {
                 // Fetch proposal data
                 const response = await fetch(`${API_BASE}/api/proposals`);
-                const proposals = await response.json();
+                                const proposalsData = await response.json();
+                const proposals = proposalsData.data || proposalsData;
                 const proposal = proposals.find(p => p.proposal_id === proposalId);
 
                 if (!proposal) {
-                    throw new Error('Proposal not found');
-                }
+                    
 
                 // Hide loading, show content
                 document.getElementById('loading').style.display = 'none';
