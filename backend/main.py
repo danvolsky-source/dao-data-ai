@@ -133,8 +133,34 @@ async def get_stats():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-@app.post("/api/votes")
-async def create_vote(vote: VoteCreate):
+
+@app.get("/api/voting-timeline")
+async deasync def get_voting_timeline():
+    try:
+        # Get votes count per day for last 30 days
+        result = supabase.table("votes").select("created_at").execute()
+        
+        # Group by date in Python
+        from collections import defaultdict
+        votes_by_date = defaultdict(int)
+        
+        for vote in result.data:
+            if vote.get('created_at'):
+                date = vote['created_at'].split('T')[0]  # Get date part only
+                votes_by_date[date] += 1
+        
+        # Convert to list and sort
+        timeline_data = [{
+            "date": date,
+            "count": count
+        } for date, count in sorted(votes_by_date.items(), reverse=True)[:30]]
+        
+        return {
+            "status": "success",
+            "data": timeline_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))f create_vote(vote: VoteCreate):
     try:
         data = vote.dict()
         if data["timestamp"]:
