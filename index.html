@@ -310,6 +310,18 @@
                     <div class="stat-number" id="threads-count">0</div>
                     <div class="stat-label">Discussions</div>
                 </div>
+                            <div class="stat-item">
+                <div class="stat-number" id="participation-rate">0%</div>
+                <div class="stat-label">Participation Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="success-rate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="avg-voting-power">0</div>
+                <div class="stat-label">Avg Voting Power</div>
+            </div>
             </div>
         </div>
     </section>
@@ -343,6 +355,38 @@ fetch('https://your-api.com/api/votes', {
         </div>
     </section>
 
+        <!-- Leaderboard Section -->
+    <section class="stats" id="leaderboard">
+        <div class="container">
+            <h2 class="section-title">🏆 Top Delegates Leaderboard</h2>
+            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eee;">
+                            <th style="padding: 12px; text-align: left; font-weight: 600; color: #333;">#</th>
+                            <th style="padding: 12px; text-align: left; font-weight: 600; color: #333;">Address</th>
+                            <th style="padding: 12px; text-align: right; font-weight: 600; color: #333;">Voting Power</th>
+                            <th style="padding: 12px; text-align: right; font-weight: 600; color: #333;">Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <tr><td colspan="4" style="text-align: center; padding: 20px; color: #888;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Chart Section -->
+    <section class="stats" id="timeline">
+        <div class="container">
+            <h2 class="section-title">📊 Activity Timeline</h2>
+            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <canvas id="timeline-chart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -366,6 +410,47 @@ fetch('https://your-api.com/api/votes', {
                 document.getElementById('delegates-count').textContent = result.data.active_delegates || 0;
                 document.getElementById('threads-count').textContent = 0; // TODO: Add threads endpoint
             }tById('threads-count').textContent = threadsData.data?.length || 0;
+
+                            // Fetch advanced analytics
+            const participationRes = await fetch(`${API_BASE}/api/analytics/participation`);
+            const participationData = await participationRes.json();
+            if (participationData.status === 'success') {
+                document.getElementById('participation-rate').textContent = participationData.data.participation_rate.toFixed(1) + '%';
+            }
+
+            const successRes = await fetch(`${API_BASE}/api/analytics/success-rate`);
+            const successData = await successRes.json();
+            if (successData.status === 'success') {
+                document.getElementById('success-rate').textContent = successData.data.success_rate.toFixed(1) + '%';
+            }
+
+            const votingPowerRes = await fetch(`${API_BASE}/api/analytics/voting-power`);
+            const votingPowerData = await votingPowerRes.json();
+            if (votingPowerData.status === 'success') {
+                document.getElementById('avg-voting-power').textContent = votingPowerData.data.average_voting_power.toLocaleString('en-US', {maximumFractionDigits: 0});
+            }
+
+            // Fetch leaderboard
+            const leaderboardRes = await fetch(`${API_BASE}/api/analytics/leaderboard`);
+            const leaderboardData = await leaderboardRes.json();
+            if (leaderboardData.status === 'success') {
+                const tbody = document.getElementById('leaderboard-body');
+                tbody.innerHTML = leaderboardData.data.map((d, i) => `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px; color: #333;">${i + 1}</td>
+                        <td style="padding: 12px; color: #333; font-family: monospace; font-size: 14px;">${d.address.substring(0,8)}...${d.address.substring(d.address.length-6)}</td>
+                        <td style="padding: 12px; text-align: right; color: #333; font-weight: 500;">${d.total_voting_power.toLocaleString('en-US', {maximumFractionDigits: 2})}</td>
+                        <td style="padding: 12px; text-align: right; color: #333;">${d.vote_count}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Fetch timeline
+            const timelineRes = await fetch(`${API_BASE}/api/analytics/timeline`);
+            const timelineData = await timelineRes.json();
+            if (timelineData.status === 'success') {
+                createTimelineChart(timelineData.data);
+            }
             } catch (error) {
                 console.error('Error fetching stats:', error);
             }
@@ -376,6 +461,51 @@ fetch('https://your-api.com/api/votes', {
         
         // Refresh stats every 30 seconds
         setInterval(fetchStats, 30000);
+
+            // Create timeline chart
+    function createTimelineChart(timelineData) {
+        const ctx = document.getElementById('timeline-chart');
+        if (!ctx) return;
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timelineData.map(d => d.date),
+                datasets: [
+                    {
+                        label: 'Proposals',
+                        data: timelineData.map(d => d.proposals),
+                        borderColor: 'rgb(9, 234, 180)',
+                        backgroundColor: 'rgba(9, 234, 180, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Votes',
+                        data: timelineData.map(d => d.votes),
+                        borderColor: 'rgb(111, 127, 180)',
+                        backgroundColor: 'rgba(111, 127, 180, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
     </script>
 </body>
 </html>
