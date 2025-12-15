@@ -110,6 +110,18 @@ export default function Home() {
                 <div class="stat-label">Active Delegates</div>
                 <div class="stat-value" id="totalDelegates">Loading...</div>
             </div>
+                      <div class="stat-card">
+            <div class="stat-label">Participation Rate</div>
+            <div class="stat-value" id="participationRate">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Success Rate</div>
+            <div class="stat-value" id="successRate">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Voting Power</div>
+            <div class="stat-value" id="avgVotingPower">Loading...</div>
+          </div>
         </div>
         <div class="charts-grid">
             <div class="chart-card">
@@ -130,6 +142,19 @@ export default function Home() {
                 </tbody>
             </table>
         </div>
+                <div class="table-container">
+          <div class="chart-title">🏆 Top Delegates Leaderboard</div>
+          <table id="leaderboardTable">
+            <thead><tr><th>Address</th><th>Voting Power</th><th>Votes</th></tr></thead>
+            <tbody id="leaderboardBody">
+              <tr><td colspan="3" style="text-align: center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="chart-card" style="margin-top: 20px;">
+          <div class="chart-title">📊 Activity Timeline</div>
+          <canvas id="timelineChart"></canvas>
+        </div>
     </div>
     <script>
         const SUPABASE_URL = 'https://fsvlkshplbfivwmdljqh.supabase.co';
@@ -144,6 +169,36 @@ export default function Home() {
                 document.getElementById('activeProposals').textContent = proposals?.filter(p => new Date(p.voting_end) > new Date()).length || 0;
                 document.getElementById('totalVotes').textContent = votes?.length || 0;
                 document.getElementById('totalDelegates').textContent = delegates?.length || 0;
+                        // Load advanced analytics
+        const participationRes = await fetch('/api/analytics/participation');
+        const participationData = await participationRes.json();
+        document.getElementById('participationRate').textContent = participationData.data.participation_rate.toFixed(1) + '%';
+        
+        const successRes = await fetch('/api/analytics/success-rate');
+        const successData = await successRes.json();
+        document.getElementById('successRate').textContent = successData.data.success_rate.toFixed(1) + '%';
+        
+        const votingPowerRes = await fetch('/api/analytics/voting-power');
+        const votingPowerData = await votingPowerRes.json();
+        document.getElementById('avgVotingPower').textContent = votingPowerData.data.average_voting_power.toLocaleString('en-US', {maximumFractionDigits: 0});
+        
+        // Load leaderboard
+        const leaderboardRes = await fetch('/api/analytics/leaderboard');
+        const leaderboardData = await leaderboardRes.json();
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = leaderboardData.data.map(d => `
+          <tr>
+            <td>${d.address.substring(0,8)}...${d.address.substring(d.address.length-6)}</td>
+            <td>${d.total_voting_power.toLocaleString('en-US', {maximumFractionDigits: 2})}</td>
+            <td>${d.vote_count}</td>
+          </tr>
+        `).join('');
+        
+        // Load timeline
+        const timelineRes = await fetch('/api/analytics/timeline');
+        const timelineData = await timelineRes.json();
+        createTimelineChart(timelineData.data);
+        
                 createProposalStatusChart(proposals);
                 createVotingTimelineChart(proposals);
                 populateProposalsTable(proposals?.slice(0, 10) || []);
@@ -180,6 +235,42 @@ export default function Home() {
                 options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
+              function createTimelineChart(timelineData) {
+        const ctx = document.getElementById('timelineChart');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: timelineData.map(d => d.date),
+            datasets: [
+              {
+                label: 'Proposals',
+                data: timelineData.map(d => d.proposals),
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true
+              },
+              {
+                label: 'Votes',
+                data: timelineData.map(d => d.votes),
+                borderColor: '#764ba2',
+                backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                tension: 0.4,
+                fill: true
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'top' }
+            },
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+      }
         function populateProposalsTable(proposals) {
             const tbody = document.getElementById('proposalsTableBody');
             tbody.innerHTML = proposals.map(p => \`
