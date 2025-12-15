@@ -146,8 +146,8 @@ def store_proposal(proposal: Dict) -> bool:
             "source": "snapshot",        }
         
         result = supabase.table("proposals").upsert(data, on_conflict="proposal_id").execute()
-                return True
-            except Exception as e:
+        return True
+    except Exception as e:
         print(f"Error storing proposal {proposal['id']}: {e}")
         return False
 
