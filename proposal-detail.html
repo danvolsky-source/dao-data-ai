@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Details - DAO Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0B1020;
+            color: #E6ECF5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(11, 16, 32, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #09EAB4;
+            text-decoration: none;
+        }
+
+        .back-button {
+            padding: 10px 20px;
+            background: #6F7FB4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: #5A6FA3;
+        }
+
+        .proposal-header {
+            background: linear-gradient(135deg, #1a2332 0%, #0f1621 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 30px 0;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .proposal-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #09EAB4;
+        }
+
+        .proposal-meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 14px;
+            color: #8B93A7;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #E6ECF5;
+        }
+
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #09EAB4;
+            color: #0B1020;
+        }
+
+        .status-closed {
+            background: #6F7FB4;
+            color: white;
+        }
+
+        .content-section {
+            background: #1a2332;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #09EAB4;
+        }
+
+        .description {
+            line-height: 1.8;
+            color: #C5CCDA;
+            white-space: pre-wrap;
+        }
+
+        .votes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .votes-table th,
+        .votes-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #2a3544;
+        }
+
+        .votes-table th {
+            background: #0f1621;
+            font-weight: 600;
+            color: #09EAB4;
+        }
+
+        .vote-for {
+            color: #09EAB4;
+        }
+
+        .vote-against {
+            color: #FF6B9D;
+        }
+
+        .vote-abstain {
+            color: #6F7FB4;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: #8B93A7;
+        }
+
+        .error {
+            background: #ff6b9d22;
+            color: #FF6B9D;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #FF6B9D;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">DAO Analytics</a>
+                <a href="/#stats" class="back-button">← Back to Stats</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="loading" class="loading">Loading proposal details...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="content" style="display: none;">
+            <div class="proposal-header">
+                <h1 class="proposal-title" id="title"></h1>
+                <div class="proposal-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Status</span>
+                        <span class="meta-value" id="status"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Proposal ID</span>
+                        <span class="meta-value" id="proposal-id" style="font-size: 14px; font-family: monospace;"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Total Votes</span>
+                        <span class="meta-value" id="vote-count"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">📋 Description</h2>
+                <div class="description" id="description"></div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">📊 Vote Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="vote-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">🗳️ All Votes</h2>
+                <div id="votes-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const API_BASE = 'https://dao-data-ai.vercel.app';
+
+        // Get proposal ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const proposalId = urlParams.get('id');
+
+        if (!proposalId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').textContent = 'No proposal ID provided. Please use ?id=PROPOSAL_ID';
+        } else {
+            loadProposalDetails();
+        }
+
+        async function loadProposalDetails() {
+            try {
+                // Fetch proposal data
+                const response = await fetch(`${API_BASE}/api/proposals`);
+                const proposals = await response.json();
+                const proposal = proposals.find(p => p.proposal_id === proposalId);
+
+                if (!proposal) {
+                    throw new Error('Proposal not found');
+                }
+
+                // Hide loading, show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+                // Populate proposal header
+                document.getElementById('title').textContent = proposal.title;
+                document.getElementById('proposal-id').textContent = proposal.proposal_id;
+                document.getElementById('vote-count').textContent = proposal.vote_count || 0;
+                
+                const statusSpan = document.getElementById('status');
+                statusSpan.innerHTML = `<span class="status-badge status-${proposal.status}">${proposal.status.toUpperCase()}</span>`;
+
+                // Populate description
+                document.getElementById('description').textContent = proposal.description || 'No description available';
+
+                // Fetch votes for this proposal
+                const votesResponse = await fetch(`${API_BASE}/api/votes`);
+                const allVotes = await votesResponse.json();
+                const proposalVotes = allVotes.filter(v => v.proposal_id === proposalId);
+
+                // Create vote distribution chart
+                createVoteChart(proposalVotes);
+
+                // Display votes table
+                displayVotesTable(proposalVotes);
+
+            } catch (error) {
+                console.error('Error loading proposal:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Error loading proposal: ' + error.message;
+            }
+        }
+
+        function createVoteChart(votes) {
+            const voteCounts = {
+                'for': 0,
+                'against': 0,
+                'abstain': 0
+            };
+
+            votes.forEach(vote => {
+                const choice = vote.vote_choice?.toLowerCase() || 'abstain';
+                voteCounts[choice] = (voteCounts[choice] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('vote-chart');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['For', 'Against', 'Abstain'],
+                    datasets: [{
+                        data: [voteCounts.for, voteCounts.against, voteCounts.abstain],
+                        backgroundColor: ['#09EAB4', '#FF6B9D', '#6F7FB4']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: `Total Votes: ${votes.length}`
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayVotesTable(votes) {
+            const container = document.getElementById('votes-container');
+            
+            if (votes.length === 0) {
+                container.innerHTML = '<p style="color: #8B93A7; text-align: center; padding: 20px;">No votes recorded yet</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'votes-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Voter Address</th>
+                        <th>Vote Choice</th>
+                        <th>Voting Power</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${votes.map((vote, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td style="font-family: monospace; font-size: 12px;">${vote.voter_address.slice(0, 10)}...${vote.voter_address.slice(-8)}</td>
+                            <td class="vote-${vote.vote_choice?.toLowerCase() || 'abstain'}">${vote.vote_choice || 'Abstain'}</td>
+                            <td>${vote.voting_power || 0}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            container.appendChild(table);
+        }
+    </script>
+</body>
+</html>
