@@ -109,18 +109,6 @@ CREATE TABLE IF NOT EXISTS delegates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- On-Chain Executions Table
-CREATE TABLE IF NOT EXISTS onchain_executions (
-    id BIGSERIAL PRIMARY KEY,
-    proposal_id TEXT NOT NULL,
-    transaction_hash TEXT UNIQUE NOT NULL,
-    block_number BIGINT NOT NULL,
-    executor_address TEXT NOT NULL,
-    gas_used BIGINT,
-    gas_price TEXT,
-    executed_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
 
 -- On-Chain Events Table (General)
 CREATE TABLE IF NOT EXISTS onchain_events (
