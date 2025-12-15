@@ -387,6 +387,36 @@ fetch('https://your-api.com/api/votes', {
         </div>
     </section>
 
+            <!-- Proposal Status Distribution Chart -->
+        <section class="stats" id="status-chart-section">
+            <div class="container">
+                <h2 class="section-title">📊 Proposal Status Distribution</h2>
+                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 0 auto;">
+                    <canvas id="status-chart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vote Distribution Chart -->
+        <section class="stats" id="vote-chart-section">
+            <div class="container">
+                <h2 class="section-title">📈 Vote Distribution by Proposal</h2>
+                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <canvas id="vote-chart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voting Power Distribution Chart -->
+        <section class="stats" id="power-chart-section">
+            <div class="container">
+                <h2 class="section-title">🍩 Voting Power Distribution</h2>
+                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 0 auto;">
+                    <canvas id="power-chart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -506,6 +536,124 @@ fetch('https://your-api.com/api/votes', {
             }
         });
     }
+
+                // Create proposal status pie chart
+        async function createStatusChart() {
+            try {
+                const res = await fetch(`${API_BASE}/api/proposals`);
+                const proposals = await res.json();
+                
+                const statuses = {};
+                proposals.forEach(p => {
+                    statuses[p.status] = (statuses[p.status] || 0) + 1;
+                });
+                
+                const ctx = document.getElementById('status-chart');
+                if (!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(statuses),
+                        datasets: [{
+                            data: Object.values(statuses),
+                            backgroundColor: ['#09EAB4', '#6F7FB4', '#FF6B9D', '#FFC857']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error creating status chart:', error);
+            }
+        }
+
+        // Create vote distribution bar chart
+        async function createVoteChart() {
+            try {
+                const res = await fetch(`${API_BASE}/api/proposals`);
+                const proposals = await res.json();
+                
+                // Get top 10 proposals by vote count
+                const topProposals = proposals
+                    .sort((a, b) => b.vote_count - a.vote_count)
+                    .slice(0, 10);
+                
+                const ctx = document.getElementById('vote-chart');
+                if (!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: topProposals.map(p => `Prop ${p.proposal_id.slice(0, 8)}...`),
+                        datasets: [{
+                            label: 'Votes',
+                            data: topProposals.map(p => p.vote_count),
+                            backgroundColor: '#09EAB4'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error creating vote chart:', error);
+            }
+        }
+
+        // Create voting power donut chart  
+        async function createPowerChart() {
+            try {
+                const res = await fetch(`${API_BASE}/api/analytics/leaderboard`);
+                const delegates = await res.json();
+                
+                // Get top 10 delegates
+                const topDelegates = delegates.slice(0, 10);
+                
+                const ctx = document.getElementById('power-chart');
+                if (!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: topDelegates.map(d => `${d.address.slice(0, 6)}...${d.address.slice(-4)}`),
+                        datasets: [{
+                            data: topDelegates.map(d => d.voting_power),
+                            backgroundColor: [
+                                '#09EAB4', '#6F7FB4', '#FF6B9D', '#FFC857',
+                                '#8B5CF6', '#EC4899', '#F59E0B', '#10B981',
+                                '#3B82F6', '#6366F1'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error creating power chart:', error);
+            }
+        }
+
+        // Call new chart functions when stats page loads
+        if (window.location.hash === '#stats') {
+            createStatusChart();
+            createVoteChart();
+            createPowerChart();
+        }
     </script>
 </body>
 </html>
