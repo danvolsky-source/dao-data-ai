@@ -141,7 +141,7 @@ export default function Home() {
                 const { data: votes } = await supabaseClient.from('votes').select('*');
                 const { data: delegates } = await supabaseClient.from('delegates').select('*');
                 document.getElementById('totalProposals').textContent = proposals?.length || 0;
-                document.getElementById('activeProposals').textContent = proposals?.filter(p => p.status === 'active').length || 0;
+                document.getElementById('activeProposals').textContent = proposals?.filter(p => new Date(p.voting_end) > new Date().length || 0;
                 document.getElementById('totalVotes').textContent = votes?.length || 0;
                 document.getElementById('totalDelegates').textContent = delegates?.length || 0;
                 createProposalStatusChart(proposals);
