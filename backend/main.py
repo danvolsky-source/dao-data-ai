@@ -112,15 +112,15 @@ async def get_proposal(proposal_id: str):
 async def get_stats():
     try:
         # Get proposal count
-        proposals_result = supabase.table("snapshot_proposals").select("id", count="exact").execute()
+        proposals_result = supabase.table("proposals").select("id", count="exact").execute()
         proposals_count = proposals_result.count if proposals_result.count else 0
         
         # Get votes count
-        votes_result = supabase.table("snapshot_votes").select("id", count="exact").execute()
+        votes_result = supabase.table("votes").select("id", count="exact").execute()
         votes_count = votes_result.count if votes_result.count else 0
         
         # Get unique delegates count (unique voters)
-        delegates_result = supabase.table("snapshot_votes").select("voter").execute()
+        delegates_result = supabase.table("votes").select("voter").execute()
         unique_delegates = len(set([v["voter"] for v in delegates_result.data])) if delegates_result.data else 0
         
         return {
