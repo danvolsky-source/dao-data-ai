@@ -82,12 +82,10 @@ def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 1000, skip: int = 
         print(f"Error fetching proposals: {e}")
         return []
 
-def fetch_votes(proposal_id: str, limit: int = 10000, skip: int = 0) -> List[Dict]:
+def fetch_votes(proposal_id: str, limit: int = 1000, skip: int = 0) -> List[Dict]:
     """
     Fetch votes for a specific proposal
     """
-    query = """
-    query Votes($proposal: String!, $first: Int!, $skip: Int!) {
       votes(
         where: { proposal: $proposal }
         first: $first
@@ -215,8 +213,7 @@ def collect_votes_for_proposal(proposal_id: str) -> int:
     
     total_votes = 0
     skip = 0
-    batch_size = 10000
-    
+    batch_size = 1000 
     while True:
         votes = fetch_votes(proposal_id, limit=batch_size, skip=skip)
         
