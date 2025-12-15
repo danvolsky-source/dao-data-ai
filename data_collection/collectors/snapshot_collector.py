@@ -137,22 +137,13 @@ def store_proposal(proposal: Dict) -> bool:
     try:
         data = {
             "proposal_id": proposal["id"],
-            "space": ARBITRUM_SPACE,
             "title": proposal["title"],
             "description": proposal.get("body", ""),
-            "proposer_address": proposal["author"],            "ipfs": proposal.get("ipfs"),
-            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
+            "proposer_address": proposal["author"],            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
             "voting_end": datetime.fromtimestamp(proposal["end"]).isoformat(),
             "snapshot_block": proposal.get("snapshot"),
-            "state": proposal["state"],
-            "choices": proposal["choices"],
-            "scores": proposal.get("scores", []),
-            "scores_total": proposal.get("scores_total", 0),
-            "quorum": proposal.get("quorum"),
-            "votes_count": proposal.get("votes", 0),
-            "type": proposal.get("type", "single-choice"),
-            "strategies": proposal.get("strategies", []),
-        }
+            "status": proposal["state"],
+            "source": "snapshot",        }
         
         result = supabase.table("proposals").upsert(data).execute()
         return True
