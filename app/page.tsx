@@ -133,8 +133,7 @@ export default function Home() {
     </div>
     <script>
         const SUPABASE_URL = 'https://fsvlkshplbfivwmdljqh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzdmxrc2hwbGJmaXZ3bWRsanFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NDM5OTgsImV4cCI6MjA3MzUxOTk5OH0.jgjEW3h1qh1kI1oYyRNoCNcGm7SsD8vtsmoFIVqgGyA';
-        const { createClient } = supabase;
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzdmxrc2hwbGJmaXZ3bWRsanFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMjc4ODQsImV4cCI6MjA2MDcwMzg4NH0.jgjEW3h1qh1kI1oYyRNoCNcGm7SsD8vtsmofIVqgGyA';        const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         async function loadDashboardData() {
             try {
