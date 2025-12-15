@@ -133,6 +133,209 @@ async def get_stats():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Advanced Analytics endpoints
+@app.get("/api/analytics/participation")
+async def get_participation_rate():
+    """
+    Calculate voter participation rate
+    """
+    try:
+        # Get total unique voters
+        votes_result = supabase.table("votes").select("voter").execute()
+        unique_voters = len(set([v["voter"] for v in votes_result.data])) if votes_result.data else 0
+        
+        # Get total delegates
+        delegates_result = supabase.table("delegates").select("id", count="exact").execute()
+        total_delegates = delegates_result.count if delegates_result.count else 0
+        
+        # Calculate participation rate
+        participation_rate = (unique_voters / total_delegates * 100) if total_delegates > 0 else 0
+        
+        return {
+            "status": "success",
+            "data": {
+                "unique_voters": unique_voters,
+                "total_delegates": total_delegates,
+                "participation_rate": round(participation_rate, 2)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/analytics/success-rate")
+async def get_success_rate():
+    """
+    Calculate proposal success rate
+    """
+    try:
+        # Get all proposals
+        proposals_result = supabase.table("proposals").select("*").execute()
+        
+        if not proposals_result.data:
+            return {
+                "status": "success",
+                "data": {
+                    "total_proposals": 0,
+                    "passed": 0,
+                    "failed": 0,
+                    "success_rate": 0
+                }
+            }
+        
+        total = len(proposals_result.data)
+        passed = sum(1 for p in proposals_result.data if p.get("votes_for", 0) > p.get("votes_against", 0))
+        failed = total - passed
+        success_rate = (passed / total * 100) if total > 0 else 0
+        
+        return {
+            "status": "success",
+            "data": {
+                "total_proposals": total,
+                "passed": passed,
+                "failed": failed,
+                "success_rate": round(success_rate, 2)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/analytics/voting-power")
+async def get_average_voting_power():
+    """
+    Calculate average voting power per delegate
+    """
+    try:
+        # Get all votes with voting power
+        votes_result = supabase.table("votes").select("voter, voting_power").execute()
+        
+        if not votes_result.data:
+            return {
+                "status": "success",
+                "data": {
+                    "total_voting_power": 0,
+                    "unique_voters": 0,
+                    "average_voting_power": 0
+                }
+            }
+        
+        # Calculate total voting power per unique voter
+        voter_power = {}
+        for vote in votes_result.data:
+            voter = vote.get("voter")
+            power = float(vote.get("voting_power", 0))
+            if voter:
+                if voter not in voter_power:
+                    voter_power[voter] = 0
+                voter_power[voter] += power
+        
+        total_power = sum(voter_power.values())
+        unique_voters = len(voter_power)
+        avg_power = total_power / unique_voters if unique_voters > 0 else 0
+        
+        return {
+            "status": "success",
+            "data": {
+                "total_voting_power": round(total_power, 2),
+                "unique_voters": unique_voters,
+                "average_voting_power": round(avg_power, 2)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/analytics/leaderboard")
+async def get_top_delegates(limit: int = 10):
+    """
+    Get top delegates by voting power
+    """
+    try:
+        # Get all votes with voting power
+        votes_result = supabase.table("votes").select("voter, voting_power").execute()
+        
+        if not votes_result.data:
+            return {
+                "status": "success",
+                "data": []
+            }
+        
+        # Calculate total voting power per unique voter
+        voter_stats = {}
+        for vote in votes_result.data:
+            voter = vote.get("voter")
+            power = float(vote.get("voting_power", 0))
+            if voter:
+                if voter not in voter_stats:
+                    voter_stats[voter] = {"voting_power": 0, "vote_count": 0}
+                voter_stats[voter]["voting_power"] += power
+                voter_stats[voter]["vote_count"] += 1
+        
+        # Sort by voting power and get top N
+        leaderboard = [
+            {
+                "address": voter,
+                "total_voting_power": round(stats["voting_power"], 2),
+                "vote_count": stats["vote_count"]
+            }
+            for voter, stats in sorted(voter_stats.items(), key=lambda x: x[1]["voting_power"], reverse=True)
+        ][:limit]
+        
+        return {
+            "status": "success",
+            "data": leaderboard
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/analytics/timeline")
+async def get_timeline_data(days: int = 30):
+    """
+    Get time-series data for proposals and votes over time
+    """
+    try:
+        from datetime import timedelta
+        
+        # Get proposals with timestamps
+        proposals_result = supabase.table("proposals").select("created_at").execute()
+        
+        # Get votes with timestamps
+        votes_result = supabase.table("votes").select("created_at").execute()
+        
+        # Group by date
+        timeline = {}
+        
+        # Process proposals
+        for proposal in proposals_result.data:
+            if proposal.get("created_at"):
+                date = proposal["created_at"][:10]  # Extract date (YYYY-MM-DD)
+                if date not in timeline:
+                    timeline[date] = {"proposals": 0, "votes": 0}
+                timeline[date]["proposals"] += 1
+        
+        # Process votes
+        for vote in votes_result.data:
+            if vote.get("created_at"):
+                date = vote["created_at"][:10]  # Extract date (YYYY-MM-DD)
+                if date not in timeline:
+                    timeline[date] = {"proposals": 0, "votes": 0}
+                timeline[date]["votes"] += 1
+        
+        # Convert to list and sort by date
+        timeline_list = [
+            {
+                "date": date,
+                "proposals": stats["proposals"],
+                "votes": stats["votes"]
+            }
+            for date, stats in sorted(timeline.items())
+        ]
+        
+        return {
+            "status": "success",
+            "data": timeline_list
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 @app.post("/api/votes")
 async def create_vote(vote: VoteCreate):
     try:
