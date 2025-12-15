@@ -20,7 +20,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 100, skip: int = 0) -> List[Dict]:
+def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
     """
     Fetch proposals from Snapshot GraphQL API
     """
@@ -82,7 +82,7 @@ def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 100, skip: int = 0
         print(f"Error fetching proposals: {e}")
         return []
 
-def fetch_votes(proposal_id: str, limit: int = 1000, skip: int = 0) -> List[Dict]:
+def fetch_votes(proposal_id: str, limit: int = 10000, skip: int = 0) -> List[Dict]:
     """
     Fetch votes for a specific proposal
     """
@@ -191,7 +191,7 @@ def collect_all_proposals() -> int:
     
     total_proposals = 0
     skip = 0
-    batch_size = 100
+    batch_size = 1000
     
     while True:
         proposals = fetch_proposals(space=ARBITRUM_SPACE, limit=batch_size, skip=skip)
@@ -225,7 +225,7 @@ def collect_votes_for_proposal(proposal_id: str) -> int:
     
     total_votes = 0
     skip = 0
-    batch_size = 1000
+    batch_size = 10000
     
     while True:
         votes = fetch_votes(proposal_id, limit=batch_size, skip=skip)
