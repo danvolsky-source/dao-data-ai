@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from typing import Optional, List, Dict
 import sys
 import os
+from supabase import create_client, Client
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,6 +20,11 @@ except ImportError as e:
 
 # Create router
 router = APIRouter(prefix="/api/advanced", tags=["advanced"])
+
+# Initialize Supabase client
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 # Initialize services (lazy loading)
 _predictor = None
@@ -74,18 +80,24 @@ async def get_ml_prediction(proposal_id: str):
                 }
             }
         
-        # Mock proposal data - replace with actual DB query
-        proposal = {
-            "id": proposal_id,
-            "votes_for": 25000000,
-            "votes_against": 8500000,
-            "total_votes": 33500000,
-            "participation_rate": 0.35,
-            "sentiment_score": 0.45,
-            "treasury_impact": 150000,
-            "treasury_balance": 2000000
-        }
-        
+        # Fetch proposal from Supabase
+        if not supabase:
+            # Fallback to mock data if Supabase not configured
+            proposal = {
+                "id": proposal_id,
+                "votes_for": 25000000,
+                "votes_against": 8500000,
+                "total_votes": 33500000,
+                "participation_rate": 0.35,
+                "sentiment_score": 0.45,
+                "treasury_impact": 150000,
+                "treasury_balance": 2000000
+            }
+        else:
+            response = supabase.table("proposals").select("*").eq("proposal_id", proposal_id).execute()
+            if not response.data:
+                raise HTTPException(status_code=404, detail="Proposal not found")
+            proposal = response.data[0]        
         # Engineer features
         engineer = FeatureEngineer()
         features = engineer.engineer_features(proposal)
