@@ -540,9 +540,10 @@ fetch('https://your-api.com/api/votes', {
                 // Create proposal status pie chart
         async function createStatusChart() {
             try {
+                        const API_BASE = 'https://dao-data-ai.vercel.app';
                 const res = await fetch(`${API_BASE}/api/proposals`);
-                const proposals = await res.json();
-                
+        const result = await res.json();                
+                        const proposals = result.data || result;
                 const statuses = {};
                 proposals.forEach(p => {
                     statuses[p.status] = (statuses[p.status] || 0) + 1;
@@ -575,9 +576,10 @@ fetch('https://your-api.com/api/votes', {
         // Create vote distribution bar chart
         async function createVoteChart() {
             try {
+                        const API_BASE = 'https://dao-data-ai.vercel.app';
                 const res = await fetch(`${API_BASE}/api/proposals`);
-                const proposals = await res.json();
-                
+        const result = await res.json();                
+                        const proposals = result.data || result;
                 // Get top 10 proposals by vote count
                 const topProposals = proposals
                     .sort((a, b) => b.vote_count - a.vote_count)
@@ -614,9 +616,10 @@ fetch('https://your-api.com/api/votes', {
         // Create voting power donut chart  
         async function createPowerChart() {
             try {
+                        const API_BASE = 'https://dao-data-ai.vercel.app';
                 const res = await fetch(`${API_BASE}/api/analytics/leaderboard`);
-                const delegates = await res.json();
-                
+        const result = await res.json();                
+                        const delegates = result.data || result;
                 // Get top 10 delegates
                 const topDelegates = delegates.slice(0, 10);
                 
