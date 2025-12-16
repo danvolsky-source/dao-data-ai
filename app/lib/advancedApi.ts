@@ -235,4 +235,33 @@ export function getScoreColor(rating: string): string {
     'CRITICAL': 'red'
   };
   return colorMap[rating] || 'gray';
+
+// Default export object for convenient usage
+export const advancedApi = {
+  getPrediction,
+  getPredictions: async () => {
+    // TODO: Implement fetching all predictions
+    // For now, return empty array
+    return [];
+  },
+  getBatchPredictions,
+  getScore,
+  getScores: async () => {
+    // TODO: Implement fetching all scores  
+    // For now, return empty array
+    return [];
+  },
+  getLeaderboard,
+  getAlerts,
+  subscribeToAlerts,
+  getSentiment,
+  getOnChainData,
+  getDashboardSummary,
+  // Helper functions
+  formatPrediction,
+  getPredictionColor,
+  getScoreColor
+};
+
+export default advancedApi;
 }
