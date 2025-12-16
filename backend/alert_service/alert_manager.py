@@ -14,9 +14,13 @@ class AlertManager:
     
     def __init__(self, db_url: Optional[str] = None, smtp_config: Optional[Dict] = None):
         self.db_url = db_url or os.getenv('DATABASE_URL', 'sqlite:///dao_analytics.db')
-        self.engine = create_engine(self.db_url)
-        self.Session = sessionmaker(bind=self.engine)
-        
+        try:
+            self.engine = create_engine(self.db_url)
+            self.Session = sessionmaker(bind=self.engine)
+        except Exception as e:
+            print(f"Warning: Database initialization failed: {e}")
+            self.engine = None
+            self.Session = None        
         # SMTP configuration for email alerts
         self.smtp_config = smtp_config or {
             'host': os.getenv('SMTP_HOST', 'smtp.gmail.com'),
