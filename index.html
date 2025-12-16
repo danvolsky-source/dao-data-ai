@@ -300,8 +300,7 @@
             container.innerHTML = delegates.map((d, i) => `
                 <div class="delegate-row">
                     <span class="delegate-rank">#${i + 1}</span>
-                    <span class="delegate-address">${d.delegate_address.substring(0, 10)}...${d.delegate_address.substring(d.delegate_address.length - 8)}</span>
-                    <span class="delegate-votes">${parseFloat(d.total_voting_power).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} VP</span>
+                    <span class="delegate-address">${d.address.substring(0, 10)}...${d.address.substring(d.address.length - 8)}</span>                    <span class="delegate-votes">${parseFloat(d.total_voting_power).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} VP</span>
                 </div>
             `).join('');
         }
