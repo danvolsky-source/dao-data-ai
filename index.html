@@ -3,675 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAO Analytics Platform</title>
+    <title>DAO Analytics</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: Arial, sans-serif;
             background: #0B1020;
-            color: #E6ECF5;
-            line-height: 1.6;
+            color: white;
+            padding: 40px;
+            margin: 0;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(9, 234, 180, 0.1);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #09EAB4;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #B8C5DB;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #09EAB4;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 100px 0;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 56px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: #B8C5DB;
-            margin-bottom: 40px;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 16px 40px;
-            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
-            color: #0B1020;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(9, 234, 180, 0.3);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 80px 0;
-            background: linear-gradient(180deg, #0B1020 0%, #111827 100%);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-
-        .feature-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(9, 234, 180, 0.1);
-            border-radius: 12px;
-            padding: 30px;
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(9, 234, 180, 0.5);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #09EAB4 0%, #00C2FF 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-
-        .feature-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #E6ECF5;
-            margin-bottom: 12px;
-        }
-
-        .feature-description {
-            color: #B8C5DB;
-            line-height: 1.6;
-        }
-
-        /* Stats Section */
-        .stats {
-            padding: 80px 0;
-            text-align: center;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #09EAB4; text-align: center; margin-bottom: 40px; }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+            gap: 20px;
+            margin-bottom: 40px;
         }
-
-        .stat-item {
-            padding: 30px;
+        .stat-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
         }
-
         .stat-number {
-            font-size: 48px;
-            font-weight: 800;
-            color: #09EAB4;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            color: #B8C5DB;
-            font-size: 16px;
-        }
-
-        /* API Section */
-        .api-section {
-            padding: 80px 0;
-            background: linear-gradient(180deg, #111827 0%, #1E293B 100%);
-        }
-
-        .api-code {
-            background: #0B1020;
-            border: 1px solid rgba(9, 234, 180, 0.2);
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 40px;
-            overflow-x: auto;
-        }
-
-        .api-code pre {
-            color: #09EAB4;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgba(9, 234, 180, 0.1);
-            color: #B8C5DB;
-        }
-
-        .section-title {
             font-size: 36px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #E6ECF5;
+            font-weight: bold;
+            color: #09EAB4;
+            margin: 10px 0;
         }
-
-        .section-subtitle {
-            text-align: center;
-            color: #B8C5DB;
-            font-size: 18px;
+        .stat-label {
+            color: #999;
+            font-size: 14px;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 36px;
-            }
-
-            .features-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .loading { text-align: center; color: #666; }
     </style>
-        
+</head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav class="container">
-            <a href="/" class="logo">DAO Analytics</a>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#api">API</a></li>
-                <li><a href="#stats">Stats</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Real-Time DAO Analytics</h1>
-            <p class="subtitle">Track proposals, votes, delegates, and discussions across DAOs in real-time</p>
-            <a href="#api" class="cta-button">Get Started</a>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Powerful Features</h2>
-            <p class="section-subtitle">Everything you need to analyze DAO governance</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3 class="feature-title">Real-Time Tracking</h3>
-                    <p class="feature-description">Monitor proposals, votes, and delegate activity in real-time with instant updates.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3 class="feature-title">AI Analytics</h3>
-                    <p class="feature-description">Advanced sentiment analysis and predictive insights powered by AI.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔗</div>
-                    <h3 class="feature-title">Multi-Chain Support</h3>
-                    <p class="feature-description">Track governance across multiple blockchain networks seamlessly.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📡</div>
-                    <h3 class="feature-title">API Access</h3>
-                    <p class="feature-description">RESTful API for easy integration with your applications.</p>
-                </div>
+    <div class="container">
+        <h1>DAO Analytics Dashboard</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Proposals</div>
+                <div class="stat-number" id="proposals">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Votes</div>
+                <div class="stat-number" id="votes">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Delegates</div>
+                <div class="stat-number" id="delegates">0</div>
             </div>
         </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats" id="stats">
-        <div class="container">
-            <h2 class="section-title">Platform Stats</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" id="proposals-count">0</div>
-                    <div class="stat-label">Active Proposals</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="votes-count">0</div>
-                    <div class="stat-label">Total Votes</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="delegates-count">0</div>
-                    <div class="stat-label">Active Delegates</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="threads-count">0</div>
-                    <div class="stat-label">Discussions</div>
-                </div>
-                            <div class="stat-item">
-                <div class="stat-number" id="participation-rate">0%</div>
-                <div class="stat-label">Participation Rate</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="success-rate">0%</div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="avg-voting-power">0</div>
-                <div class="stat-label">Avg Voting Power</div>
-            </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- API Section -->
-    <section class="api-section" id="api">
-        <div class="container">
-            <h2 class="section-title">Easy API Integration</h2>
-            <p class="section-subtitle">Start building with our RESTful API in minutes</p>
-            
-            <div class="api-code">
-                <pre>
-// Get all proposals
-fetch('https://your-api.com/api/proposals')
-  .then(res => res.json())
-  .then(data => console.log(data));
-
-// Create a new vote
-fetch('https://your-api.com/api/votes', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    proposal_id: 'prop_123',
-    voter_address: '0x...',
-    vote_choice: 'for',
-    voting_power: 1000
-  })
-});
-                </pre>
-            </div>
-        </div>
-    </section>
-
-        <!-- Leaderboard Section -->
-    <section class="stats" id="leaderboard">
-        <div class="container">
-            <h2 class="section-title">🏆 Top Delegates Leaderboard</h2>
-            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #eee;">
-                            <th style="padding: 12px; text-align: left; font-weight: 600; color: #333;">#</th>
-                            <th style="padding: 12px; text-align: left; font-weight: 600; color: #333;">Address</th>
-                            <th style="padding: 12px; text-align: right; font-weight: 600; color: #333;">Voting Power</th>
-                            <th style="padding: 12px; text-align: right; font-weight: 600; color: #333;">Votes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <tr><td colspan="4" style="text-align: center; padding: 20px; color: #888;">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Timeline Chart Section -->
-    <section class="stats" id="timeline">
-        <div class="container">
-            <h2 class="section-title">📊 Activity Timeline</h2>
-            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <canvas id="timeline-chart" style="max-height: 400px;"></canvas>
-            </div>
-        </div>
-    </section>
-
-            <!-- Proposal Status Distribution Chart -->
-        <section class="stats" id="status-chart-section">
-            <div class="container">
-                <h2 class="section-title">📊 Proposal Status Distribution</h2>
-                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 0 auto;">
-                    <canvas id="status-chart" style="max-height: 400px;"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Vote Distribution Chart -->
-        <section class="stats" id="vote-chart-section">
-            <div class="container">
-                <h2 class="section-title">📈 Vote Distribution by Proposal</h2>
-                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    <canvas id="vote-chart" style="max-height: 400px;"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Voting Power Distribution Chart -->
-        <section class="stats" id="power-chart-section">
-            <div class="container">
-                <h2 class="section-title">🍩 Voting Power Distribution</h2>
-                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 0 auto;">
-                    <canvas id="power-chart" style="max-height: 400px;"></canvas>
-                </div>
-            </div>
-        </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 DAO Analytics Platform. All rights reserved.</p>
-        </div>
-    </footer>
+        
+        <div id="status" class="loading">Loading data...</div>
+    </div>
 
     <script>
-        // Fetch real-time stats from API
-        async function fetchStats() {
-            try {
-                const API_BASE = 'https://dao-data-ai.vercel.app';
-                
-                // Fetch stats from unified API endpoint
-            const response = await fetch(`${API_BASE}/api/stats`);
-            const result = await response.json();
-            
-            if (result.status === 'success' && result.data) {
-                document.getElementById('proposals-count').textContent = result.data.active_proposals || 0;
-                document.getElementById('votes-count').textContent = result.data.total_votes || 0;
-                document.getElementById('delegates-count').textContent = result.data.active_delegates || 0;
-                document.getElementById('threads-count').textContent = 0; // TODO: Add threads endpoint
-
-                            // Fetch advanced analytics
-            const participationRes = await fetch(`${API_BASE}/api/analytics/participation`);
-            const participationData = await participationRes.json();
-            if (participationData.status === 'success') {
-                document.getElementById('participation-rate').textContent = participationData.data.participation_rate.toFixed(1) + '%';
-            }
-
-            const successRes = await fetch(`${API_BASE}/api/analytics/success-rate`);
-            const successData = await successRes.json();
-            if (successData.status === 'success') {
-                document.getElementById('success-rate').textContent = successData.data.success_rate.toFixed(1) + '%';
-            }
-
-            const votingPowerRes = await fetch(`${API_BASE}/api/analytics/voting-power`);
-            const votingPowerData = await votingPowerRes.json();
-            if (votingPowerData.status === 'success') {
-                document.getElementById('avg-voting-power').textContent = votingPowerData.data.average_voting_power.toLocaleString('en-US', {maximumFractionDigits: 0});
-            }
-
-            // Fetch leaderboard
-            const leaderboardRes = await fetch(`${API_BASE}/api/analytics/leaderboard`);
-            const leaderboardData = await leaderboardRes.json();
-            if (leaderboardData.status === 'success') {
-                const tbody = document.getElementById('leaderboard-body');
-                tbody.innerHTML = leaderboardData.data.map((d, i) => `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px; color: #333;">${i + 1}</td>
-                        <td style="padding: 12px; color: #333; font-family: monospace; font-size: 14px;">${d.address.substring(0,8)}...${d.address.substring(d.address.length-6)}</td>
-                        <td style="padding: 12px; text-align: right; color: #333; font-weight: 500;">${d.total_voting_power.toLocaleString('en-US', {maximumFractionDigits: 2})}</td>
-                        <td style="padding: 12px; text-align: right; color: #333;">${d.vote_count}</td>
-                    </tr>
-                `).join('');
-            }
-
-            // Fetch timeline
-            const timelineRes = await fetch(`${API_BASE}/api/analytics/timeline`);
-            const timelineData = await timelineRes.json();
-            if (timelineData.status === 'success') {
-                createTimelineChart(timelineData.data);
-            }
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-            }
-        }
-
-        // Fetch stats on page load
-        fetchStats();
+        console.log('Script started');
         
-        // Refresh stats every 30 seconds
-        setInterval(fetchStats, 30000);
-
-            // Create timeline chart
-    function createTimelineChart(timelineData) {
-        const ctx = document.getElementById('timeline-chart');
-        if (!ctx) return;
+        async function loadStats() {
+            try {
+                console.log('Fetching stats...');
+                const response = await fetch('https://dao-data-ai.vercel.app/api/stats');
+                console.log('Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                if (data.status === 'success' && data.data) {
+                    document.getElementById('proposals').textContent = data.data.active_proposals || 0;
+                    document.getElementById('votes').textContent = data.data.total_votes || 0;
+                    document.getElementById('delegates').textContent = data.data.active_delegates || 0;
+                    document.getElementById('status').textContent = 'Data loaded successfully!';
+                    document.getElementById('status').style.color = '#09EAB4';
+                } else {
+                    document.getElementById('status').textContent = 'Error: Invalid data format';
+                    document.getElementById('status').style.color = '#ff6b6b';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'Error loading data: ' + error.message;
+                document.getElementById('status').style.color = '#ff6b6b';
+            }
+        }
         
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: timelineData.map(d => d.date),
-                datasets: [
-                    {
-                        label: 'Proposals',
-                        data: timelineData.map(d => d.proposals),
-                        borderColor: 'rgb(9, 234, 180)',
-                        backgroundColor: 'rgba(9, 234, 180, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Votes',
-                        data: timelineData.map(d => d.votes),
-                        borderColor: 'rgb(111, 127, 180)',
-                        backgroundColor: 'rgba(111, 127, 180, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-                // Create proposal status pie chart
-        async function createStatusChart() {
-            try {
-                        const API_BASE = 'https://dao-data-ai.vercel.app';
-                const res = await fetch(`${API_BASE}/api/proposals`);
-        const result = await res.json();                
-                        const proposals = result.data || result;
-                const statuses = {};
-                proposals.forEach(p => {
-                    statuses[p.status] = (statuses[p.status] || 0) + 1;
-                });
-                
-                const ctx = document.getElementById('status-chart');
-                if (!ctx) return;
-                
-                new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: Object.keys(statuses),
-                        datasets: [{
-                            data: Object.values(statuses),
-                            backgroundColor: ['#09EAB4', '#6F7FB4', '#FF6B9D', '#FFC857']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error creating status chart:', error);
-            }
-        }
-
-        // Create vote distribution bar chart
-        async function createVoteChart() {
-            try {
-                        const API_BASE = 'https://dao-data-ai.vercel.app';
-                const res = await fetch(`${API_BASE}/api/proposals`);
-        const result = await res.json();                
-                        const proposals = result.data || result;
-                // Get top 10 proposals by vote count
-                const topProposals = proposals
-                    .sort((a, b) => b.vote_count - a.vote_count)
-                    .slice(0, 10);
-                
-                const ctx = document.getElementById('vote-chart');
-                if (!ctx) return;
-                
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: topProposals.map(p => `Prop ${p.proposal_id.slice(0, 8)}...`),
-                        datasets: [{
-                            label: 'Votes',
-                            data: topProposals.map(p => p.vote_count),
-                            backgroundColor: '#09EAB4'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true }
-                        },
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error creating vote chart:', error);
-            }
-        }
-
-        // Create voting power donut chart  
-        async function createPowerChart() {
-            try {
-                        const API_BASE = 'https://dao-data-ai.vercel.app';
-                const res = await fetch(`${API_BASE}/api/analytics/leaderboard`);
-        const result = await res.json();                
-                        const delegates = result.data || result;
-                // Get top 10 delegates
-                const topDelegates = delegates.slice(0, 10);
-                
-                const ctx = document.getElementById('power-chart');
-                if (!ctx) return;
-                
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: topDelegates.map(d => `${d.address.slice(0, 6)}...${d.address.slice(-4)}`),
-                        datasets: [{
-                            data: topDelegates.map(d => d.voting_power),
-                            backgroundColor: [
-                                '#09EAB4', '#6F7FB4', '#FF6B9D', '#FFC857',
-                                '#8B5CF6', '#EC4899', '#F59E0B', '#10B981',
-                                '#3B82F6', '#6366F1'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error creating power chart:', error);
-            }
-        }
-
-<!-- Chart.js library -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Initialize charts when page loads
-        window.addEventListener('DOMContentLoaded', function() {
-            // Check if we're on stats page
-            function initCharts() {
-                                if (window.location.hash === '#stats') {
-                    setTimeout(() => {
-                        createTimelineChart([]);
-                        createStatusChart();
-                        createVoteChart();
-                        createPowerChart();
-                    }, 500);
-                }
-            }
-            
-            // Initialize on load
-            initCharts();
-            
-            // Re-initialize when navigating
-            window.addEventListener('hashchange', initCharts);
-        });
-    </script></body>
+        // Load immediately
+        loadStats();
+        
+        // Reload every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
+</body>
 </html>
