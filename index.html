@@ -439,7 +439,6 @@ fetch('https://your-api.com/api/votes', {
                 document.getElementById('votes-count').textContent = result.data.total_votes || 0;
                 document.getElementById('delegates-count').textContent = result.data.active_delegates || 0;
                 document.getElementById('threads-count').textContent = 0; // TODO: Add threads endpoint
-            }tById('threads-count').textContent = threadsData.data?.length || 0;
 
                             // Fetch advanced analytics
             const participationRes = await fetch(`${API_BASE}/api/analytics/participation`);
