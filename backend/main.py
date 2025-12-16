@@ -6,6 +6,13 @@ import os
 from datetime import datetime
 from supabase import create_client, Client
 
+# Import advanced endpoints router
+try:
+    from api.advanced_endpoints import router as advanced_router
+except ImportError:
+    print("Warning: Advanced endpoints not found. Skipping advanced features integration.
+    advanced_router = None
+
 # Initialize FastAPI
 app = FastAPI(title="DAO Analytics API", version="1.0.0")
 
@@ -22,6 +29,13 @@ app.add_middleware(
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fsvlkshplbfivwmdljqh.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# Include advanced endpoints router
+if advanced_router:
+    app.include_router(advanced_router)
+    print("✅ Advanced endpoints (ML, scoring, alerts, sentiment) loaded successfully")
+else:
+    print("⚠️ Advanced endpoints not available")
 
 # Pydantic models
 class ProposalCreate(BaseModel):
