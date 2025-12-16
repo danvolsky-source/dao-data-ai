@@ -119,4 +119,52 @@ export interface ApiResponse<T> {
   data?: T;
   error?: ApiError;
   timestamp: string;
+
+// ============================================
+// ADVANCED ML & ANALYTICS TYPES
+// ============================================
+
+export interface Prediction {
+  proposal_id: string;
+  prediction: number;
+  confidence: number;
+  model: string;
+  features_used?: number;
+}
+
+export interface Score {
+  proposal_id: string;
+  overall_score: number;
+  rating: 'EXCELLENT' | 'GOOD' | 'MODERATE' | 'POOR' | 'CRITICAL';
+  component_scores: {
+    prediction_confidence: number;
+    sentiment: number;
+    participation: number;
+    risk_assessment: number;
+    treasury_impact: number;
+    execution_quality: number;
+  };
+  recommendation: {
+    action: string;
+    confidence: string;
+    message: string;
+  };
+}
+
+export interface Alert {
+  type: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFO';
+  message: string;
+}
+
+export interface Sentiment {
+  proposal_id: string;
+  overall_sentiment: number;
+  sentiment_label: string;
+  positive_ratio: number;
+  negative_ratio: number;
+  neutral_ratio: number;
+  message_count: number;
+  top_topics: string[];
+}
 }
