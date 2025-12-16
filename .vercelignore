@@ -1,5 +1,7 @@
-# Exclude Next.js API routes that conflict with FastAPI backend
-app/api/
+# Exclude Python backend folder to avoid conflict with Next.js API routes
+/api
+/backend
+/data_collection
 lib/supabase.ts
 
 # These are handled by FastAPI backend instead
