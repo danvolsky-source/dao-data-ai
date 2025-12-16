@@ -1,0 +1,6 @@
+# Exclude Next.js API routes that conflict with FastAPI backend
+app/api/
+lib/supabase.ts
+
+# These are handled by FastAPI backend instead
+# All API requests should go to /api/* which routes to backend/main.py
