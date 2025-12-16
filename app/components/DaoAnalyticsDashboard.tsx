@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import ProposalsChart from './ProposalsChart';
+import StatusPieChart from './StatusPieChart';
 
 interface ProposalData {
   id: string;
@@ -138,10 +139,12 @@ const DaoAnalyticsDashboard = () => {
         </div>
       </div>
 
-      {/* Voting Comparison Chart */}
-      <ProposalsChart proposals={proposals} />
-    </div>
-  );
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <ProposalsChart proposals={proposals} />
+        <StatusPieChart proposals={proposals} />
+);
 };
 
+      <StatusPieChart proposals={proposals} />
 export default DaoAnalyticsDashboard;
