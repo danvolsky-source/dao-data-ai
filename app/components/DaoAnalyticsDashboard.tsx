@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import ProposalsChart from './ProposalsChart';
 
 interface ProposalData {
   id: string;
@@ -136,6 +137,9 @@ const DaoAnalyticsDashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* Voting Comparison Chart */}
+      <ProposalsChart proposals={proposals} />
     </div>
   );
 };
