@@ -124,7 +124,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>DAO Analytics Dashboard</h1>
+        <h1>📊 DAO Analytics Dashboard</h1>
         
         <div class="stats-grid">
             <div class="stat-card">
@@ -147,13 +147,13 @@
 
         <div class="charts-section">
             <div class="chart-container">
-                <h3>Proposal Activity Timeline</h3>
+                <h3>📈 Proposal Activity Timeline</h3>
                 <div class="chart-wrapper">
                     <canvas id="timelineChart"></canvas>
                 </div>
             </div>
             <div class="chart-container">
-                <h3>Proposal Success Rate</h3>
+                <h3>🎯 Proposal Success Rate</h3>
                 <div class="chart-wrapper">
                     <canvas id="successChart"></canvas>
                 </div>
@@ -161,7 +161,7 @@
         </div>
 
         <div class="leaderboard">
-            <h3>Top Delegates Leaderboard</h3>
+            <h3>🏆 Top Delegates by Voting Power</h3>
             <div id="leaderboard-content" class="loading">Loading...</div>
         </div>
     </div>
@@ -189,15 +189,17 @@
             }
         }
         
-        function updateStats(stats) {
-            document.getElementById('proposals-count').textContent = (stats.proposals || 0).toLocaleString();
-            document.getElementById('votes-count').textContent = (stats.votes || 0).toLocaleString();
-            document.getElementById('delegates-count').textContent = (stats.delegates || 0).toLocaleString();
-            document.getElementById('threads-count').textContent = (stats.threads || 0).toLocaleString();
+        function updateStats(response) {
+            const data = response.data || {};
+            document.getElementById('proposals-count').textContent = (data.active_proposals || 0).toLocaleString();
+            document.getElementById('votes-count').textContent = (data.total_votes || 0).toLocaleString();
+            document.getElementById('delegates-count').textContent = (data.active_delegates || 0).toLocaleString();
+            document.getElementById('threads-count').textContent = '0';
         }
         
-        function updateCharts(timeline, stats) {
-            const timelineData = timeline.timeline || [];
+        function updateCharts(response, statsResponse) {
+            const timelineData = response.data || [];
+            const statsData = statsResponse.data || {};
             const labels = timelineData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
             const proposalCounts = timelineData.map(d => d.proposals);
             const voteCounts = timelineData.map(d => d.votes);
@@ -252,7 +254,9 @@
                 });
             }
             
-            const successRate = stats.proposals > 0 ? Math.round((stats.votes / stats.proposals) * 100) : 0;
+            const activeProposals = statsData.active_proposals || 0;
+            const totalVotes = statsData.total_votes || 0;
+            const successRate = activeProposals > 0 ? Math.round((totalVotes / activeProposals) * 100) : 0;
             const failRate = 100 - successRate;
             
             if (successChart) {
@@ -284,9 +288,9 @@
             }
         }
         
-        function updateLeaderboard(data) {
+        function updateLeaderboard(response) {
             const container = document.getElementById('leaderboard-content');
-            const delegates = data.leaderboard || [];
+            const delegates = response.data || [];
             
             if (delegates.length === 0) {
                 container.innerHTML = '<div class="loading">No delegates data available</div>';
@@ -297,7 +301,7 @@
                 <div class="delegate-row">
                     <span class="delegate-rank">#${i + 1}</span>
                     <span class="delegate-address">${d.delegate_address.substring(0, 10)}...${d.delegate_address.substring(d.delegate_address.length - 8)}</span>
-                    <span class="delegate-votes">${parseInt(d.total_votes).toLocaleString()} votes</span>
+                    <span class="delegate-votes">${parseFloat(d.total_voting_power).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} VP</span>
                 </div>
             `).join('');
         }
