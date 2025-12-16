@@ -653,12 +653,26 @@ fetch('https://your-api.com/api/votes', {
 
 <!-- Chart.js library -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        // Call new chart functions when stats page loads
-        if (window.location.hash === '#stats') {
-            createStatusChart();
-            createVoteChart();
-            createPowerChart();
-        }
-    </script>
-</body>
+    <script>
+        // Initialize charts when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check if we're on stats page
+            function initCharts() {
+                                if (window.location.hash === '#stats') {
+                    setTimeout(() => {
+                        createTimelineChart([]);
+                        createStatusChart();
+                        createVoteChart();
+                        createPowerChart();
+                    }, 500);
+                }
+            }
+            
+            // Initialize on load
+            initCharts();
+            
+            // Re-initialize when navigating
+            window.addEventListener('hashchange', initCharts);
+        });
+    </script></body>
 </html>
