@@ -143,8 +143,9 @@ const DaoAnalyticsDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <ProposalsChart proposals={proposals} />
         <StatusPieChart proposals={proposals} />
-);
-};
-
-      <StatusPieChart proposals={proposals} />
-export default DaoAnalyticsDashboard;
+      </div>
+    </div>
+  );
+}
+  
+  ;export default DaoAnalyticsDashboard;
