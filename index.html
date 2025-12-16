@@ -34,250 +34,276 @@
             border-radius: 15px;
             text-align: center;
             border: 1px solid rgba(9, 234, 180, 0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(9, 234, 180, 0.3);
-            border-color: #09EAB4;
-        }
-        .stat-label {
-            color: #999;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-        .stat-number {
-            font-size: 48px;
+        .stat-value {
+            font-size: 36px;
             font-weight: bold;
             color: #09EAB4;
             margin: 10px 0;
         }
-        .charts-grid {
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .charts-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 40px;
         }
         .chart-container {
             background: rgba(26, 26, 46, 0.8);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             border: 1px solid rgba(9, 234, 180, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        .chart-title {
+        .chart-container h3 {
             color: #09EAB4;
-            font-size: 20px;
             margin-bottom: 20px;
             text-align: center;
+            font-size: 18px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
         }
         .leaderboard {
             background: rgba(26, 26, 46, 0.8);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             border: 1px solid rgba(9, 234, 180, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
         }
-        .leaderboard-item {
+        .leaderboard h3 {
+            color: #09EAB4;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .delegate-row {
             display: flex;
             justify-content: space-between;
             padding: 15px;
             margin: 10px 0;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(9, 234, 180, 0.05);
             border-radius: 8px;
-            transition: all 0.3s ease;
+            border-left: 3px solid #09EAB4;
         }
-        .leaderboard-item:hover {
-            background: rgba(9, 234, 180, 0.1);
-            transform: translateX(5px);
+        .delegate-rank {
+            color: #09EAB4;
+            font-weight: bold;
+            margin-right: 15px;
         }
-        .rank { color: #09EAB4; font-weight: bold; min-width: 30px; }
-        .address { flex: 1; margin: 0 15px; font-family: monospace; }
-        .power { color: #09EAB4; font-weight: bold; }
+        .delegate-address {
+            flex: 1;
+            font-family: monospace;
+            color: #ddd;
+        }
+        .delegate-votes {
+            color: #09EAB4;
+            font-weight: bold;
+        }
         .loading {
             text-align: center;
+            padding: 40px;
             color: #09EAB4;
-            padding: 20px;
             font-size: 18px;
         }
         @media (max-width: 768px) {
-            .charts-grid { grid-template-columns: 1fr; }
-            .stat-number { font-size: 36px; }
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
             h1 { font-size: 32px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 DAO Analytics Dashboard</h1>
+        <h1>DAO Analytics Dashboard</h1>
         
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Active Proposals</div>
-                <div class="stat-number" id="proposals">-</div>
+                <div class="stat-label">Total Proposals</div>
+                <div class="stat-value" id="proposals-count">-</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Total Votes</div>
-                <div class="stat-number" id="votes">-</div>
+                <div class="stat-value" id="votes-count">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Active Delegates</div>
-                <div class="stat-number" id="delegates">-</div>
+                <div class="stat-label">Total Delegates</div>
+                <div class="stat-value" id="delegates-count">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Participation Rate</div>
-                <div class="stat-number" id="participation">-</div>
+                <div class="stat-label">Active Discussions</div>
+                <div class="stat-value" id="threads-count">-</div>
             </div>
         </div>
 
-        <div class="charts-grid">
+        <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">📈 Activity Timeline</div>
-                <canvas id="timelineChart"></canvas>
+                <h3>Proposal Activity Timeline</h3>
+                <div class="chart-wrapper">
+                    <canvas id="timelineChart"></canvas>
+                </div>
             </div>
             <div class="chart-container">
-                <div class="chart-title">🎯 Proposal Success Rate</div>
-                <canvas id="successChart"></canvas>
+                <h3>Proposal Success Rate</h3>
+                <div class="chart-wrapper">
+                    <canvas id="successChart"></canvas>
+                </div>
             </div>
         </div>
 
         <div class="leaderboard">
-            <div class="chart-title">🏆 Top Delegates by Voting Power</div>
-            <div id="leaderboard"></div>
+            <h3>Top Delegates Leaderboard</h3>
+            <div id="leaderboard-content" class="loading">Loading...</div>
         </div>
-
-        <div id="status" class="loading">Loading data...</div>
     </div>
 
     <script>
         let timelineChart, successChart;
-
-        async function loadAllData() {
+        
+        async function loadData() {
             try {
-                // Load basic stats
-                const statsRes = await fetch('/api/stats');
-                const statsData = await statsRes.json();
-                if (statsData.status === 'success') {
-                    document.getElementById('proposals').textContent = statsData.data.active_proposals.toLocaleString();
-                    document.getElementById('votes').textContent = statsData.data.total_votes.toLocaleString();
-                    document.getElementById('delegates').textContent = statsData.data.active_delegates.toLocaleString();
-                }
-
-                // Load participation rate
-                const partRes = await fetch('/api/analytics/participation');
-                const partData = await partRes.json();
-                if (partData.status === 'success') {
-                    document.getElementById('participation').textContent = partData.data.participation_rate.toFixed(1) + '%';
-                }
-
-                // Load timeline data
-                const timelineRes = await fetch('/api/analytics/timeline');
-                const timelineData = await timelineRes.json();
-                if (timelineData.status === 'success') {
-                    createTimelineChart(timelineData.data);
-                }
-
-                // Load success rate
-                const successRes = await fetch('/api/analytics/success-rate');
-                const successData = await successRes.json();
-                if (successData.status === 'success') {
-                    createSuccessChart(successData.data);
-                }
-
-                // Load leaderboard
-                const leaderRes = await fetch('/api/analytics/leaderboard?limit=10');
-                const leaderData = await leaderRes.json();
-                if (leaderData.status === 'success') {
-                    createLeaderboard(leaderData.data);
-                }
-
-                document.getElementById('status').textContent = '✅ Data loaded successfully!';
-                setTimeout(() => {
-                    document.getElementById('status').style.display = 'none';
-                }, 3000);
+                const [statsRes, analyticsRes, leaderboardRes] = await Promise.all([
+                    fetch('/api/stats'),
+                    fetch('/api/analytics/timeline?days=30'),
+                    fetch('/api/analytics/leaderboard?limit=10')
+                ]);
+                
+                const stats = await statsRes.json();
+                const timeline = await analyticsRes.json();
+                const leaderboard = await leaderboardRes.json();
+                
+                updateStats(stats);
+                updateCharts(timeline, stats);
+                updateLeaderboard(leaderboard);
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('status').textContent = '❌ Error loading data';
+                console.error('Error loading data:', error);
             }
         }
-
-        function createTimelineChart(data) {
-            const ctx = document.getElementById('timelineChart');
-            if (timelineChart) timelineChart.destroy();
+        
+        function updateStats(stats) {
+            document.getElementById('proposals-count').textContent = (stats.proposals || 0).toLocaleString();
+            document.getElementById('votes-count').textContent = (stats.votes || 0).toLocaleString();
+            document.getElementById('delegates-count').textContent = (stats.delegates || 0).toLocaleString();
+            document.getElementById('threads-count').textContent = (stats.threads || 0).toLocaleString();
+        }
+        
+        function updateCharts(timeline, stats) {
+            const timelineData = timeline.timeline || [];
+            const labels = timelineData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            const proposalCounts = timelineData.map(d => d.proposals);
+            const voteCounts = timelineData.map(d => d.votes);
             
-            const last30 = data.slice(-30);
-            timelineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: last30.map(d => d.date),
-                    datasets: [
-                        {
-                            label: 'Proposals',
-                            data: last30.map(d => d.proposals),
-                            borderColor: '#09EAB4',
-                            backgroundColor: 'rgba(9, 234, 180, 0.1)',
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Votes',
-                            data: last30.map(d => d.votes),
-                            borderColor: '#6C63FF',
-                            backgroundColor: 'rgba(108, 99, 255, 0.1)',
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: 'white' } }
+            if (timelineChart) {
+                timelineChart.data.labels = labels;
+                timelineChart.data.datasets[0].data = proposalCounts;
+                timelineChart.data.datasets[1].data = voteCounts;
+                timelineChart.update('none');
+            } else {
+                const ctx1 = document.getElementById('timelineChart').getContext('2d');
+                timelineChart = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Proposals',
+                                data: proposalCounts,
+                                borderColor: '#09EAB4',
+                                backgroundColor: 'rgba(9, 234, 180, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Votes',
+                                data: voteCounts,
+                                borderColor: '#FF6B9D',
+                                backgroundColor: 'rgba(255, 107, 157, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
                     },
-                    scales: {
-                        x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                        y: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        },
+                        scales: {
+                            y: { 
+                                ticks: { color: '#888' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: { 
+                                ticks: { color: '#888' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
                     }
-                }
-            });
-        }
-
-        function createSuccessChart(data) {
-            const ctx = document.getElementById('successChart');
-            if (successChart) successChart.destroy();
+                });
+            }
             
-            successChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Passed', 'Failed'],
-                    datasets: [{
-                        data: [data.passed, data.failed],
-                        backgroundColor: ['#09EAB4', '#FF6B6B'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: 'white', font: { size: 14 } } }
+            const successRate = stats.proposals > 0 ? Math.round((stats.votes / stats.proposals) * 100) : 0;
+            const failRate = 100 - successRate;
+            
+            if (successChart) {
+                successChart.data.datasets[0].data = [successRate, failRate];
+                successChart.update('none');
+            } else {
+                const ctx2 = document.getElementById('successChart').getContext('2d');
+                successChart = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Voted On', 'No Votes'],
+                        datasets: [{
+                            data: [successRate, failRate],
+                            backgroundColor: ['#09EAB4', '#FF6B9D'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                labels: { color: '#fff' },
+                                position: 'bottom'
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-
-        function createLeaderboard(data) {
-            const container = document.getElementById('leaderboard');
-            container.innerHTML = data.map((item, index) => `
-                <div class="leaderboard-item">
-                    <span class="rank">#${index + 1}</span>
-                    <span class="address">${item.address.slice(0, 10)}...${item.address.slice(-8)}</span>
-                    <span class="power">${item.total_voting_power.toLocaleString()} VP</span>
+        
+        function updateLeaderboard(data) {
+            const container = document.getElementById('leaderboard-content');
+            const delegates = data.leaderboard || [];
+            
+            if (delegates.length === 0) {
+                container.innerHTML = '<div class="loading">No delegates data available</div>';
+                return;
+            }
+            
+            container.innerHTML = delegates.map((d, i) => `
+                <div class="delegate-row">
+                    <span class="delegate-rank">#${i + 1}</span>
+                    <span class="delegate-address">${d.delegate_address.substring(0, 10)}...${d.delegate_address.substring(d.delegate_address.length - 8)}</span>
+                    <span class="delegate-votes">${parseInt(d.total_votes).toLocaleString()} votes</span>
                 </div>
             `).join('');
         }
-
-        loadAllData();
-        setInterval(loadAllData, 60000);
+        
+        loadData();
+        setInterval(loadData, 60000);
     </script>
 </body>
 </html>
