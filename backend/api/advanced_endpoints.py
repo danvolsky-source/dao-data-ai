@@ -55,10 +55,8 @@ def get_alert_manager():
 
 # ========== ML PREDICTION ENDPOINTS ==========
 
-@router.get"/predictions/{proposal_id}")
+@router.get("/predictions/{proposal_id}")async def get_ml_prediction(proposal_id: str):
 async def get_ml_prediction(proposal_id: str):
-    """
-    Get ML-powered prediction for proposal outcome
     Uses XGBoost model with 75+ engineered features
     """
     try:
