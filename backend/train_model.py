@@ -17,8 +17,14 @@ from supabase import create_client, Client
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 try:
-    from ml_service.feature_engineer import FeatureEngineer
+    try:
+    from ml_service.feature_engineer import ProposalFeatureEngineer
     from ml_service.predictor import ProposalPredictor
+    from sentiment_repository import SentimentRepository
+    import xgboost as xgb
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
     import xgboost as xgb
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
