@@ -62,8 +62,7 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
               </div>
             </div>
             <span className="text-xs opacity-60 whitespace-nowrap ml-2">
-              {new Date(alert.triggered_at).toLocaleDateString()}
-            </span>
+                {alert.triggered_at ? new Date(alert.triggered_at).toLocaleDateString() : 'N/A'}            </span>
           </div>
         </div>
       ))}
