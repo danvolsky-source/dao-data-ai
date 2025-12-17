@@ -85,7 +85,7 @@ export async function getPrediction(proposalId: string): Promise<Prediction | nu
     const res = await fetch(`${API_BASE}/api/advanced/predictions/${proposalId}`);
     const data = await res.json();
     const duration = Date.now() - startTime;
-    logApiResponse('GET', `/api/advanced/predictions/${proposalId}`, 200, duration, { status: data.status });
+    logApiResponse('GET', `/api/advanced/predictions/${proposalId}`, res.status, duration, { status: data.status });
     return data.status === 'success' ? data.data : null;
   } catch (error) {
     console.error('Error fetching prediction:', error);
