@@ -34,25 +34,25 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <main className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 py-16 px-8">
+      <section className="gradient-primary py-20 px-8 animate-fade-in">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-slide-in-up">
             Real-time DAO Analytics
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-2">
+            <span className="block gradient-text mt-2">
               Powered by AI
             </span>
           </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 mb-8 max-w-3xl mx-auto animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
             Track proposals, votes, and delegate activity across multiple DAOs. 
             Get AI-powered insights and predictive analytics for better governance decisions.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+            <button className="btn btn-primary">
               Explore Dashboard
             </button>
-            <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200 border border-white/20">
+            <button className="glass text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200">
               View Documentation
             </button>
           </div>
@@ -60,23 +60,23 @@ export default function Home() {
       </section>
 
       {/* Stats Overview */}
-      <section className="py-8 px-8 bg-gray-900/50">
+      <section className="py-12 px-8" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 text-center">
-              <div className="text-3xl font-bold text-cyan-400 mb-2">1,000+</div>
+            <div className="card animate-slide-in-left text-center">
+              <div className="text-4xl font-bold text-indigo-400 mb-2">1,000+</div>
               <div className="text-gray-400 text-sm">Active Proposals</div>
             </div>
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-2">50K+</div>
+            <div className="card animate-slide-in-left text-center" style={{ animationDelay: '0.1s' }}>
+              <div className="text-4xl font-bold text-purple-400 mb-2">50K+</div>
               <div className="text-gray-400 text-sm">Total Votes</div>
             </div>
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">500+</div>
+            <div className="card animate-slide-in-left text-center" style={{ animationDelay: '0.2s' }}>
+              <div className="text-4xl font-bold text-indigo-400 mb-2">500+</div>
               <div className="text-gray-400 text-sm">Active Delegates</div>
             </div>
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">95%</div>
+            <div className="card animate-slide-in-left text-center" style={{ animationDelay: '0.3s' }}>
+              <div className="text-4xl font-bold text-purple-400 mb-2">95%</div>
               <div className="text-gray-400 text-sm">Prediction Accuracy</div>
             </div>
           </div>
