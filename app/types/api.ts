@@ -138,10 +138,10 @@ export interface Score {
   overall_score: number;
   total_score: number;
   rating: 'EXCELLENT' | 'GOOD' | 'MODERATE' | 'POOR' | 'CRITICAL';
-    onchain_score?: number;
-  sentiment_score?: number;
-  activity_score?: number;
-  quality_score?: number;
+    onchain_score: number;
+  sentiment_score: number;
+  activity_score: number;
+  quality_score: number;
   
   component_scores: {
     prediction_confidence: number;
@@ -150,10 +150,10 @@ export interface Score {
     risk_assessment: number;
     treasury_impact: number;
     execution_quality: number;
-        sentiment_score?: number;
-    onchain_score?: number;
-    activity_score?: number;
-    quality_score?: number;
+        sentiment_score: number;
+    onchain_score: number;
+    activity_score: number;
+    quality_score: number;
   };
   recommendation: {
     action: string;
