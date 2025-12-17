@@ -136,6 +136,7 @@ export interface Prediction {
 export interface Score {
   proposal_id: string;
   overall_score: number;
+    total_score?: number;
   rating: 'EXCELLENT' | 'GOOD' | 'MODERATE' | 'POOR' | 'CRITICAL';
   component_scores: {
     prediction_confidence: number;
