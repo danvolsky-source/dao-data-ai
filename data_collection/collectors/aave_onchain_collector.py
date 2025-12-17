@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Arbitrum DAO On-Chain Data Collector
+Aave DAO On-Chain Data Collector
 
 Collects:
-- Proposal executions from Arbitrum Governor contract
-- Token transfers and staking events
-- Treasury movements
+- Proposal executions from Aave Governor contract
+- Vote casting events
 - Delegate voting power changes
 
 Requires:
-- Web3.py for Arbitrum RPC connection
+- Web3.py for Ethereum RPC connection
 - Supabase for data storage
 """
 
@@ -26,18 +25,17 @@ load_dotenv()
 # Configuration
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-ARBITRUM_RPC = os.getenv('ARBITRUM_RPC_URL', 'https://arb1.arbitrum.io/rpc')
+ETHEREUM_RPC = os.getenv('ETHEREUM_RPC_URL', 'https://eth.llamarpc.com')
 
-# Arbitrum DAO Governor contract
-GOVERNOR_ADDRESS = '0xf07DeD9dC292157749B6Fd268E37DF6EA38395B9'  # ArbitrumGovernor
-ARB_TOKEN = '0x912CE59144191C1204E64559FE8253a0e49E6548'  # ARB token
+# Aave DAO Governor contract (Governance v2)
+GOVERNOR_ADDRESS = '0xEC568fffba86c094cf06b22134B23074DFE2252c'  # Aave Governance v2
 
 # Initialize clients
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
-w3 = Web3(Web3.HTTPProvider(ARBITRUM_RPC))
+w3 = Web3(Web3.HTTPProvider(ETHEREUM_RPC))
 
 if not w3.is_connected():
-    print(f'Warning: Failed to connect to Arbitrum RPC at {ARBITRUM_RPC}')
+    print(f'Warning: Failed to connect to Ethereum RPC at {ETHEREUM_RPC}')
 
 # Governor ABI (relevant events)
 GOVERNOR_ABI = [
@@ -69,7 +67,7 @@ def get_latest_block():
         return w3.eth.block_number - 10000  # Start 10k blocks back if no DB
         
     try:
-        result = supabase.table('onchain_sync_status').select('*').eq('chain', 'arbitrum').single().execute()
+        result = supabase.table('onchain_sync_status').select('*').eq('chain', 'aave').single().execute()
         if result.data:
             return result.data['last_block']
     except:
@@ -83,7 +81,7 @@ def update_sync_status(block_number):
         
     try:
         supabase.table('onchain_sync_status').upsert({
-            'chain': 'arbitrum',
+            'chain': 'aave',
             'last_block': block_number,
             'synced_at': datetime.utcnow().isoformat()
         }).execute()
@@ -102,7 +100,7 @@ def process_proposal_executed(event):
     data = {
         'proposal_id': str(proposal_id),
         'event_type': 'executed',
-        'chain': 'arbitrum',
+        'chain': 'aave',
         'block_number': event['blockNumber'],
         'transaction_hash': event['transactionHash'].hex(),
         'executed_at': datetime.fromtimestamp(block['timestamp']).isoformat(),
@@ -132,7 +130,7 @@ def process_vote_cast(event):
     data = {
         'proposal_id': str(proposal_id),
         'event_type': 'vote',
-        'chain': 'arbitrum',
+        'chain': 'aave',
         'block_number': event['blockNumber'],
         'transaction_hash': event['transactionHash'].hex(),
         'voter_address': voter.lower(),
@@ -192,9 +190,9 @@ def collect_events(from_block, to_block):
 
 def main():
     """Main collection loop"""
-    print("Starting Arbitrum on-chain collector...")
+    print("Starting Aave on-chain collector...")
     print(f"Governor: {GOVERNOR_ADDRESS}")
-    print(f"Connected to Arbitrum: {w3.is_connected()}")
+    print(f"Connected to Ethereum: {w3.is_connected()}")
     
     if not w3.is_connected():
         print("Cannot proceed without RPC connection")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Snapshot Collector for Arbitrum DAO
-Collects proposal and vote data from Snapshot GraphQL API
+Aave DAO Data Collector
+Collects proposal and vote data from Aave Snapshot space
 """
 
 import os
@@ -13,14 +13,14 @@ from supabase import create_client, Client
 
 # Configuration
 SNAPSHOT_API_URL = "https://hub.snapshot.org/graphql"
-ARBITRUM_SPACE = "arbitrumfoundation.eth"
+AAVE_SPACE = "aave.eth"
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
-def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
+def fetch_proposals(space: str = AAVE_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
     """
     Fetch proposals from Snapshot GraphQL API
     """
@@ -149,7 +149,7 @@ def store_proposal(proposal: Dict) -> bool:
             "snapshot_block": proposal.get("snapshot"),
             "status": proposal["state"],
             "source": "snapshot",
-            "dao": "arbitrum",
+            "dao": "aave",
         }
         
         result = supabase.table("proposals").upsert(data, on_conflict="proposal_id").execute()
@@ -186,16 +186,16 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
 
 def collect_all_proposals() -> int:
     """
-    Collect all proposals from Arbitrum Snapshot space
+    Collect all proposals from Aave Snapshot space
     """
-    print(f"Starting collection for {ARBITRUM_SPACE}...")
+    print(f"Starting collection for {AAVE_SPACE}...")
     
     total_proposals = 0
     skip = 0
-    batch_size = 1000
+    batch_size = 100
     
     while True:
-        proposals = fetch_proposals(space=ARBITRUM_SPACE, limit=batch_size, skip=skip)
+        proposals = fetch_proposals(space=AAVE_SPACE, limit=batch_size, skip=skip)
         
         if not proposals:
             break
@@ -261,7 +261,7 @@ def collect_all_votes() -> int:
     print("Fetching proposals from database...")
     
     try:
-        result = supabase.table("proposals").select("proposal_id").eq("dao", "arbitrum").execute()
+        result = supabase.table("proposals").select("proposal_id").eq("dao", "aave").execute()
         proposals = result.data
         
         total_votes = 0
@@ -281,7 +281,7 @@ def main():
     Main entry point
     """
     print("=" * 60)
-    print("Arbitrum DAO Snapshot Collector")
+    print("Aave DAO Snapshot Collector")
     print("=" * 60)
     
     # Collect proposals
