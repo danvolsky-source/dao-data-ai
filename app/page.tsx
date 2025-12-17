@@ -20,13 +20,12 @@ export default function Home() {
   useEffect(() => {
     async function fetchAdvancedData() {
       try {
-        const [predictions, scores, alerts, sentiment] = await Promise.all([
+        const [predictions, scores, alerts] = await Promise.all([
           advancedApi.getPredictions(),
           advancedApi.getScores(),
-          advancedApi.getAlerts(),
-          advancedApi.getSentiment()
+          advancedApi.getAlerts()
         ]);
-        setAdvancedData({ predictions, scores, alerts, sentiment });
+        setAdvancedData({ predictions, scores, alerts, sentiment: null });
       } catch (error) {
         console.error('Failed to fetch advanced data:', error);
       }
