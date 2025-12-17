@@ -129,6 +129,7 @@ export interface Prediction {
   prediction: number;
   confidence: number;
   model: string;
+    predicted_outcome?: 'pass' | 'fail';
   features_used?: number;
 }
 
