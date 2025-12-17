@@ -235,6 +235,7 @@ export function getScoreColor(rating: string): string {
     'CRITICAL': 'red'
   };
   return colorMap[rating] || 'gray';
+  }
 
 // Default export object for convenient usage
 const advancedApi =  {
