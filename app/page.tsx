@@ -6,7 +6,7 @@ import PredictionBadge from './components/PredictionBadge';
 import ScoreBadge from './components/ScoreBadge';
 import AlertsList from './components/AlertsList';
 import SentimentGauge from './components/SentimentGauge';
-import advancedApi from '../lib/advancedApi';
+import advancedApi from './lib/advancedApi';
 import type { Prediction, Score, Alert, Sentiment } from './types/api';
 
 export default function Home() {
