@@ -215,3 +215,39 @@ CREATE POLICY "Allow public read access" ON delegates FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON proposal_analytics FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON onchain_events FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON onchain_sync_status FOR SELECT USING (true);
+-- Forum Sentiment
+CREATE TABLE forum_sentiment (
+  id              BIGSERIAL PRIMARY KEY,
+  proposal_id     VARCHAR(255),
+  thread_id       VARCHAR(255),
+  avg_sentiment   FLOAT,
+  positive_ratio  FLOAT,
+  negative_ratio  FLOAT,
+  neutral_ratio   FLOAT,
+  total_messages  INT,
+  unique_authors  INT,
+  sentiment_trend VARCHAR(50),
+  created_at      TIMESTAMP DEFAULT NOW(),
+  updated_at      TIMESTAMP DEFAULT NOW(),
+  UNIQUE (proposal_id, thread_id)
+);
+
+-- Twitter Sentiment
+CREATE TABLE twitter_sentiment (
+  id                       BIGSERIAL PRIMARY KEY,
+  proposal_id              VARCHAR(255),
+  hashtag                  VARCHAR(255),
+  avg_sentiment            FLOAT,
+  positive_ratio           FLOAT,
+  negative_ratio           FLOAT,
+  neutral_ratio            FLOAT,
+  total_tweets             INT,
+  total_engagement         INT,
+  avg_engagement_per_tweet FLOAT,
+  created_at               TIMESTAMP DEFAULT NOW(),
+  updated_at               TIMESTAMP DEFAULT NOW(),
+  UNIQUE (proposal_id, hashtag)
+);
+
+-- Telegram, Reddit, Cross-Channel — по аналогии, если будешь подключать позже
+
