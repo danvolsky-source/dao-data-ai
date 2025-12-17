@@ -1,0 +1,417 @@
+openapi: 3.0.3
+info:
+  title: DAO Data AI API
+  description: |
+    AI-powered governance analytics platform for DAOs. This API provides endpoints for
+    predicting proposal outcomes, analyzing sentiment, calculating governance scores,
+    and retrieving alerts based on on-chain and off-chain data.
+    
+    ## Features
+    - **ML Predictions**: Get AI-powered predictions for DAO proposal outcomes
+    - **Sentiment Analysis**: Analyze community sentiment on proposals
+    - **Governance Scoring**: Calculate comprehensive governance health scores
+    - **Real-time Alerts**: Monitor critical governance events
+    
+    ## Authentication
+    Currently, the API is open for public use. Future versions will implement API key authentication.
+    
+  version: 1.0.0
+  contact:
+    name: DAO Data AI Support
+    url: https://dao-data-ai.vercel.app
+  license:
+    name: MIT
+    
+servers:
+  - url: https://dao-data-ai.vercel.app/api
+    description: Production server
+  - url: https://www.sky-mind.com/api
+    description: Production server (custom domain)
+  - url: http://localhost:8000
+    description: Development server
+
+tags:
+  - name: Predictions
+    description: ML-powered prediction endpoints
+  - name: Scores
+    description: Governance scoring endpoints
+  - name: Alerts
+    description: Alert and monitoring endpoints
+  - name: Sentiment
+    description: Sentiment analysis endpoints
+
+paths:
+  /advanced/predictions/{proposalId}:
+    get:
+      tags:
+        - Predictions
+      summary: Get ML prediction for a proposal
+      description: |
+        Retrieves an AI-powered prediction for a specific DAO proposal outcome.
+        The prediction includes confidence scores, feature importance, and historical context.
+      operationId: getPrediction
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          description: Unique identifier for the proposal
+          schema:
+            type: string
+          example: "prop-123"
+      responses:
+        '200':
+          description: Successful prediction response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prediction'
+        '404':
+          description: Proposal not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /advanced/predictions/batch:
+    post:
+      tags:
+        - Predictions
+      summary: Get batch predictions for multiple proposals
+      description: |
+        Retrieves predictions for multiple proposals in a single request.
+        Useful for analyzing multiple proposals simultaneously.
+      operationId: getBatchPredictions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                proposalIds:
+                  type: array
+                  items:
+                    type: string
+                  example: ["prop-123", "prop-456", "prop-789"]
+      responses:
+        '200':
+          description: Successful batch prediction response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  predictions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Prediction'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /advanced/scores/{proposalId}:
+    get:
+      tags:
+        - Scores
+      summary: Get governance score for a proposal
+      description: |
+        Calculates a comprehensive governance score for a proposal based on multiple factors
+        including community engagement, on-chain activity, and historical patterns.
+      operationId: getScore
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          description: Unique identifier for the proposal
+          schema:
+            type: string
+          example: "prop-123"
+      responses:
+        '200':
+          description: Successful score response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+        '404':
+          description: Proposal not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /advanced/alerts:
+    get:
+      tags:
+        - Alerts
+      summary: Get recent governance alerts
+      description: |
+        Retrieves recent alerts about critical governance events, anomalies,
+        and important changes that require attention.
+      operationId: getAlerts
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of alerts to return
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: severity
+          in: query
+          description: Filter by alert severity
+          schema:
+            type: string
+            enum: [critical, high, medium, low]
+      responses:
+        '200':
+          description: Successful alerts response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alerts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Alert'
+
+  /advanced/sentiment/{proposalId}:
+    get:
+      tags:
+        - Sentiment
+      summary: Get sentiment analysis for a proposal
+      description: |
+        Analyzes community sentiment for a proposal based on discussions,
+        votes, and social media activity.
+      operationId: getSentiment
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          description: Unique identifier for the proposal
+          schema:
+            type: string
+          example: "prop-123"
+      responses:
+        '200':
+          description: Successful sentiment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sentiment'
+        '404':
+          description: Proposal not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Prediction:
+      type: object
+      required:
+        - proposal_id
+        - prediction
+        - confidence
+        - model
+        - features_used
+      properties:
+        proposal_id:
+          type: string
+          description: Unique identifier for the proposal
+          example: "prop-123"
+        prediction:
+          type: number
+          format: float
+          description: Predicted outcome (0-1 scale)
+          minimum: 0
+          maximum: 1
+          example: 0.78
+        confidence:
+          type: number
+          format: float
+          description: Prediction confidence score
+          minimum: 0
+          maximum: 1
+          example: 0.85
+        model:
+          type: string
+          description: ML model used for prediction
+          example: "RandomForest-v2"
+        features_used:
+          type: number
+          description: Number of features used in prediction
+          example: 42
+        predicted_outcome:
+          type: string
+          enum: [pass, fail, uncertain]
+          description: Predicted outcome category
+          example: "pass"
+
+    Score:
+      type: object
+      required:
+        - proposal_id
+        - overall_score
+        - rating
+        - component_scores
+      properties:
+        proposal_id:
+          type: string
+          description: Unique identifier for the proposal
+          example: "prop-123"
+        overall_score:
+          type: number
+          format: float
+          description: Overall governance score (0-100)
+          minimum: 0
+          maximum: 100
+          example: 78.5
+        total_score:
+          type: number
+          format: float
+          description: Total calculated score
+          example: 78.5
+        rating:
+          type: string
+          enum: [EXCELLENT, GOOD, MODERATE, POOR, CRITICAL]
+          description: Rating category based on score
+          example: "GOOD"
+        component_scores:
+          type: object
+          required:
+            - prediction_confidence
+            - sentiment
+            - onchain_score
+            - social_score
+            - technical_score
+          properties:
+            prediction_confidence:
+              type: number
+              example: 0.85
+            sentiment:
+              type: number
+              example: 0.72
+            onchain_score:
+              type: number
+              example: 0.90
+            social_score:
+              type: number
+              example: 0.65
+            technical_score:
+              type: number
+              example: 0.88
+
+    Alert:
+      type: object
+      required:
+        - id
+        - type
+        - severity
+        - message
+        - timestamp
+        - proposal_id
+      properties:
+        id:
+          type: string
+          description: Unique alert identifier
+          example: "alert-456"
+        type:
+          type: string
+          enum: [prediction_change, score_drop, high_risk, anomaly]
+          description: Type of alert
+          example: "high_risk"
+        severity:
+          type: string
+          enum: [critical, high, medium, low]
+          description: Alert severity level
+          example: "high"
+        message:
+          type: string
+          description: Human-readable alert message
+          example: "High risk detected for proposal prop-123"
+        timestamp:
+          type: string
+          format: date-time
+          description: When the alert was generated
+          example: "2025-12-17T11:00:00Z"
+        proposal_id:
+          type: string
+          description: Related proposal ID
+          example: "prop-123"
+        metadata:
+          type: object
+          description: Additional alert metadata
+          additionalProperties: true
+
+    Sentiment:
+      type: object
+      required:
+        - proposal_id
+        - overall_sentiment
+        - sentiment_score
+      properties:
+        proposal_id:
+          type: string
+          description: Unique identifier for the proposal
+          example: "prop-123"
+        overall_sentiment:
+          type: string
+          enum: [positive, neutral, negative]
+          description: Overall sentiment classification
+          example: "positive"
+        sentiment_score:
+          type: number
+          format: float
+          description: Sentiment score (-1 to 1)
+          minimum: -1
+          maximum: 1
+          example: 0.65
+        analysis:
+          type: object
+          properties:
+            positive_mentions:
+              type: integer
+              example: 42
+            negative_mentions:
+              type: integer
+              example: 8
+            neutral_mentions:
+              type: integer
+              example: 15
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "NotFound"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Proposal with ID prop-123 not found"
+        code:
+          type: integer
+          description: HTTP status code
+          example: 404
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+          example: "2025-12-17T11:00:00Z"
