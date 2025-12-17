@@ -146,6 +146,10 @@ export interface Score {
     risk_assessment: number;
     treasury_impact: number;
     execution_quality: number;
+        sentiment_score?: number;
+    onchain_score?: number;
+    activity_score?: number;
+    quality_score?: number;
   };
   recommendation: {
     action: string;
