@@ -18,7 +18,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
     """
@@ -134,16 +134,23 @@ def store_proposal(proposal: Dict) -> bool:
     """
     Store proposal in Supabase
     """
+    if not supabase:
+        print("Supabase not configured")
+        return False
+        
     try:
         data = {
             "proposal_id": proposal["id"],
             "title": proposal["title"],
             "description": proposal.get("body", ""),
-            "proposer_address": proposal["author"],            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
+            "proposer_address": proposal["author"],
+            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
             "voting_end": datetime.fromtimestamp(proposal["end"]).isoformat(),
             "snapshot_block": proposal.get("snapshot"),
             "status": proposal["state"],
-            "source": "snapshot",        }
+            "source": "snapshot",
+            "dao": "arbitrum",
+        }
         
         result = supabase.table("proposals").upsert(data, on_conflict="proposal_id").execute()
         return True
@@ -155,6 +162,10 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
     """
     Store vote in Supabase
     """
+    if not supabase:
+        print("Supabase not configured")
+        return False
+        
     try:
         data = {
             "vote_id": vote["id"],
@@ -243,10 +254,14 @@ def collect_all_votes() -> int:
     """
     Collect votes for all proposals in database
     """
+    if not supabase:
+        print("Supabase not configured - skipping vote collection")
+        return 0
+        
     print("Fetching proposals from database...")
     
     try:
-        result = supabase.table("proposals").select("proposal_id").execute()
+        result = supabase.table("proposals").select("proposal_id").eq("dao", "arbitrum").execute()
         proposals = result.data
         
         total_votes = 0
