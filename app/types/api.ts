@@ -183,4 +183,3 @@ export interface Sentiment {
   message_count: number;
   top_topics: string[];
 }
-}
