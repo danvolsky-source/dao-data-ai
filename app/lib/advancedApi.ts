@@ -4,6 +4,7 @@
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { logger, logApiRequest, logApiResponse, logError, logPerformance } from '@/lib/logger';
 
 // TypeScript interfaces
 export interface Prediction {
@@ -79,12 +80,17 @@ export interface DashboardSummary {
  */
 export async function getPrediction(proposalId: string): Promise<Prediction | null> {
   try {
+        const startTime = Date.now();
+    logApiRequest('GET', `/api/advanced/predictions/${proposalId}`, { proposalId });
     const res = await fetch(`${API_BASE}/api/advanced/predictions/${proposalId}`);
     const data = await res.json();
     return data.status === 'success' ? data.data : null;
   } catch (error) {
     console.error('Error fetching prediction:', error);
+        logError('Error fetching prediction', error as Error, { proposalId });
     return null;
+      const duration = Date.now() - startTime;
+    logApiResponse('GET', `/api/advanced/predictions/${proposalId}`, 200, duration, { status: data.status });
   }
 }
 
