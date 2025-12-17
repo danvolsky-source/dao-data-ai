@@ -1,21 +1,28 @@
 from typing import Dict, List, Any
 import pandas as pd
+import logging
 
 from .lib.sentiment_base import BaseSentimentAnalyzer
 from .lib.sentiment_engine import CombinedSentimentEngine
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("ForumSentimentAnalyzer")
+
 
 class ForumSentimentAnalyzer(BaseSentimentAnalyzer):
-    """Sentiment-анализатор для Discourse форума Arbitrum."""
+    """Sentiment-анализатор для Discourse форума."""
 
     def __init__(self) -> None:
         self.engine = CombinedSentimentEngine()
 
     def analyze_text(self, text: str) -> Dict[str, Any]:
+        logger.info("Analyzing text sentiment.")
         return self.engine.analyze_text(text)
 
     def aggregate_messages(self, messages: List[Dict[str, Any]]) -> Dict[str, Any]:
         if not messages:
+            logger.warning("No messages to aggregate.")
             base = self.engine.aggregate_scores([])
             base.update(
                 {
@@ -25,6 +32,8 @@ class ForumSentimentAnalyzer(BaseSentimentAnalyzer):
                 }
             )
             return base
+
+        logger.info(f"Aggregating {len(messages)} messages.")
 
         scores = [self.analyze_text(m.get("content", "")) for m in messages]
         aggregated = self.engine.aggregate_scores(scores)
@@ -55,6 +64,8 @@ class ForumSentimentAnalyzer(BaseSentimentAnalyzer):
         )[:3]
 
         aggregated["top_positive_authors"] = top_positive
+        logger.info("Aggregation complete.")
+
         return aggregated
 
     def get_source_name(self) -> str:
