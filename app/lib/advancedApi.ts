@@ -34,9 +34,13 @@ export interface Score {
 }
 
 export interface Alert {
-  type: string;
+    type?: string;
   severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFO';
   message: string;
+    alert_id?: string;
+    alert_type?: string;
+    triggered_at?: string;
+    recommendation?: string;
 }
 
 export interface Sentiment {
