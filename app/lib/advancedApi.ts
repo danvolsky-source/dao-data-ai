@@ -79,18 +79,18 @@ export interface DashboardSummary {
  * Get ML prediction for a proposal
  */
 export async function getPrediction(proposalId: string): Promise<Prediction | null> {
+  const startTime = Date.now();
   try {
-        const startTime = Date.now();
     logApiRequest('GET', `/api/advanced/predictions/${proposalId}`, { proposalId });
     const res = await fetch(`${API_BASE}/api/advanced/predictions/${proposalId}`);
     const data = await res.json();
+    const duration = Date.now() - startTime;
+    logApiResponse('GET', `/api/advanced/predictions/${proposalId}`, res.status, duration, { status: data.status });
     return data.status === 'success' ? data.data : null;
   } catch (error) {
     console.error('Error fetching prediction:', error);
-        logError('Error fetching prediction', error as Error, { proposalId });
+    logError('Error fetching prediction', error as Error, { proposalId });
     return null;
-      const duration = Date.now() - startTime;
-    logApiResponse('GET', `/api/advanced/predictions/${proposalId}`, 200, duration, { status: data.status });
   }
 }
 
