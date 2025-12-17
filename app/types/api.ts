@@ -119,6 +119,7 @@ export interface ApiResponse<T> {
   data?: T;
   error?: ApiError;
   timestamp: string;
+  }
 
 // ============================================
 // ADVANCED ML & ANALYTICS TYPES
