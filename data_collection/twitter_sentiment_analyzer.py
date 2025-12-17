@@ -59,7 +59,7 @@ class TwitterSentimentAnalyzer(BaseSentimentAnalyzer):
         max_engagement = max(engagements) or 1
         weights = [e / max_engagement for e in engagements]
 
-        # Взвешенное агрегирование комбинированных скорров
+        # Взвешенное агрегирование комбинированных скоров
         combined_scores = [s["combined_score"] for s in scores]
         weighted_scores = [cs * w for cs, w in zip(combined_scores, weights)]
 

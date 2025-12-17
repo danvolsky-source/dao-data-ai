@@ -73,19 +73,24 @@ def extract_sentiment_features(db: Any, proposal_id: str) -> Dict[str, Any]:
         Dict of features
     """
     features: Dict[str, Any] = {}
+    
+    # Helper to safely get sentiment data
+    def get_sentiment_data(method_name: str) -> Dict[str, Any]:
+        method = getattr(db, method_name, lambda x: {})
+        return method(proposal_id) or {}
 
     # Discord
-    discord = getattr(db, "get_discord_sentiment", lambda x: {}) (proposal_id) or {}
+    discord = get_sentiment_data("get_discord_sentiment")
     features["discord_avg_sentiment"] = discord.get("avg_sentiment", 0.0)
     features["discord_positive_ratio"] = discord.get("positive_ratio", 0.0)
 
     # Forum
-    forum = getattr(db, "get_forum_sentiment", lambda x: {}) (proposal_id) or {}
+    forum = get_sentiment_data("get_forum_sentiment")
     features["forum_avg_sentiment"] = forum.get("avg_sentiment", 0.0)
     features["forum_unique_authors"] = forum.get("unique_authors", 0)
 
     # Twitter
-    twitter = getattr(db, "get_twitter_sentiment", lambda x: {}) (proposal_id) or {}
+    twitter = get_sentiment_data("get_twitter_sentiment")
     features["twitter_avg_sentiment"] = twitter.get("avg_sentiment", 0.0)
     features["twitter_std_sentiment"] = twitter.get("std_sentiment", 0.0)
     features["twitter_positive_ratio"] = twitter.get("positive_ratio", 0.0)
@@ -93,7 +98,7 @@ def extract_sentiment_features(db: Any, proposal_id: str) -> Dict[str, Any]:
     features["twitter_total_tweets"] = twitter.get("total_tweets", 0)
 
     # Cross-channel
-    cross = getattr(db, "get_cross_channel_sentiment", lambda x: {}) (proposal_id) or {}
+    cross = get_sentiment_data("get_cross_channel_sentiment")
     features["overall_sentiment"] = cross.get("overall_avg_sentiment", 0.0)
     features["channel_consistency"] = cross.get("channel_consistency", 0.0)
 
