@@ -237,7 +237,8 @@ export function getScoreColor(rating: string): string {
   return colorMap[rating] || 'gray';
 
 // Default export object for convenient usage
-const advancedApi = {  getPrediction,
+const advancedApi =  {
+  getPrediction,
   getPredictions: async () => {
     // TODO: Implement fetching all predictions
     // For now, return empty array
