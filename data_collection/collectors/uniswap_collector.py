@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Snapshot Collector for Arbitrum DAO
-Collects proposal and vote data from Snapshot GraphQL API
+Uniswap DAO Data Collector
+Collects proposal and vote data from Uniswap Snapshot space
 """
 
 import os
@@ -13,14 +13,14 @@ from supabase import create_client, Client
 
 # Configuration
 SNAPSHOT_API_URL = "https://hub.snapshot.org/graphql"
-ARBITRUM_SPACE = "arbitrumfoundation.eth"
+UNISWAP_SPACE = "uniswap.eth"
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
-def fetch_proposals(space: str = ARBITRUM_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
+def fetch_proposals(space: str = UNISWAP_SPACE, limit: int = 1000, skip: int = 0) -> List[Dict]:
     """
     Fetch proposals from Snapshot GraphQL API
     """
@@ -134,16 +134,23 @@ def store_proposal(proposal: Dict) -> bool:
     """
     Store proposal in Supabase
     """
+    if not supabase:
+        print("Supabase not configured")
+        return False
+        
     try:
         data = {
             "proposal_id": proposal["id"],
             "title": proposal["title"],
             "description": proposal.get("body", ""),
-            "proposer_address": proposal["author"],            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
+            "proposer_address": proposal["author"],
+            "voting_start": datetime.fromtimestamp(proposal["start"]).isoformat(),
             "voting_end": datetime.fromtimestamp(proposal["end"]).isoformat(),
             "snapshot_block": proposal.get("snapshot"),
             "status": proposal["state"],
-            "source": "snapshot",        }
+            "source": "snapshot",
+            "dao": "uniswap",
+        }
         
         result = supabase.table("proposals").upsert(data, on_conflict="proposal_id").execute()
         return True
@@ -155,6 +162,10 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
     """
     Store vote in Supabase
     """
+    if not supabase:
+        print("Supabase not configured")
+        return False
+        
     try:
         data = {
             "vote_id": vote["id"],
@@ -175,16 +186,16 @@ def store_vote(vote: Dict, proposal_id: str) -> bool:
 
 def collect_all_proposals() -> int:
     """
-    Collect all proposals from Arbitrum Snapshot space
+    Collect all proposals from Uniswap Snapshot space
     """
-    print(f"Starting collection for {ARBITRUM_SPACE}...")
+    print(f"Starting collection for {UNISWAP_SPACE}...")
     
     total_proposals = 0
     skip = 0
-    batch_size = 1000
+    batch_size = 100
     
     while True:
-        proposals = fetch_proposals(space=ARBITRUM_SPACE, limit=batch_size, skip=skip)
+        proposals = fetch_proposals(space=UNISWAP_SPACE, limit=batch_size, skip=skip)
         
         if not proposals:
             break
@@ -243,10 +254,14 @@ def collect_all_votes() -> int:
     """
     Collect votes for all proposals in database
     """
+    if not supabase:
+        print("Supabase not configured - skipping vote collection")
+        return 0
+        
     print("Fetching proposals from database...")
     
     try:
-        result = supabase.table("proposals").select("proposal_id").execute()
+        result = supabase.table("proposals").select("proposal_id").eq("dao", "uniswap").execute()
         proposals = result.data
         
         total_votes = 0
@@ -266,7 +281,7 @@ def main():
     Main entry point
     """
     print("=" * 60)
-    print("Arbitrum DAO Snapshot Collector")
+    print("Uniswap DAO Snapshot Collector")
     print("=" * 60)
     
     # Collect proposals
