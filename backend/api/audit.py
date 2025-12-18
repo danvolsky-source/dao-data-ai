@@ -39,7 +39,14 @@ def verify_admin_access(request: Request):
     # For now, just check if a specific header is present
     # In production, implement proper authentication
     auth_header = request.headers.get("X-Admin-Key")
-    admin_key = os.getenv("ADMIN_KEY", "change-me-in-production")
+    admin_key = os.getenv("ADMIN_KEY")
+    
+    # Require ADMIN_KEY environment variable to be set
+    if not admin_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Server configuration error: ADMIN_KEY not set"
+        )
     
     if not auth_header or auth_header != admin_key:
         raise HTTPException(

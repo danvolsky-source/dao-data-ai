@@ -5,36 +5,36 @@ Standard disclaimers for all prediction and analytical outputs
 
 # Primary Regulatory Disclaimer
 MAIN_DISCLAIMER = """
-⚠️ ВАЖНОЕ УВЕДОМЛЕНИЕ О РИСКАХ И ОГРАНИЧЕНИЯХ
+⚠️ IMPORTANT RISK AND LIMITATION NOTICE
 
-Информация на этой платформе предназначена исключительно для 
-информационных и образовательных целей. Это НЕ является:
-- Инвестиционным советом
-- Торговыми сигналами
-- Финансовыми рекомендациями
-- Гарантией будущих результатов
+Information on this platform is provided exclusively for 
+informational and educational purposes. This is NOT:
+- Investment advice
+- Trading signals
+- Financial recommendations
+- A guarantee of future results
 
-ОГРАНИЧЕНИЯ И РИСКИ:
-1. Прогнозы основаны на исторических данных и могут быть неточными
-2. Прошлые результаты не гарантируют будущую производительность
-3. Используются только публичные данные из официальных источников
-4. Анализ настроений может не отражать реальное мнение сообщества
-5. ML модели являются экспериментальными и могут содержать ошибки
+LIMITATIONS AND RISKS:
+1. Predictions are based on historical data and may be inaccurate
+2. Past performance does not guarantee future results
+3. Only public data from official sources is used
+4. Sentiment analysis may not reflect actual community opinion
+5. ML models are experimental and may contain errors
 
-РЕКОМЕНДАЦИИ:
-- НЕ используйте эту информацию для принятия торговых решений
-- Проводите собственное исследование (DYOR)
-- Консультируйтесь с квалифицированными финансовыми советниками
-- Инвестируйте только средства, которые можете позволить себе потерять
+RECOMMENDATIONS:
+- DO NOT use this information for making trading decisions
+- Conduct your own research (DYOR)
+- Consult with qualified financial advisors
+- Only invest funds you can afford to lose
 
-Все риски несет пользователь. Мы не несем ответственности за любые убытки, 
-возникшие в результате использования этой платформы.
+All risks are borne by the user. We are not responsible for any losses
+arising from use of this platform.
 """
 
 # Short Disclaimer for API Responses
 SHORT_DISCLAIMER = (
-    "⚠️ Это аналитическая информация, не инвестиционный совет. "
-    "Используйте только для образовательных целей. Все риски несет пользователь."
+    "⚠️ This is analytical information, not investment advice. "
+    "Use for educational purposes only. All risks are borne by the user."
 )
 
 # Prediction-Specific Disclaimer
