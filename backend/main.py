@@ -31,6 +31,12 @@ except ImportError:
     print("Warning: Audit endpoints not found.")
     audit_router = None
 
+try:
+    from api.model_metrics import router as model_metrics_router
+except ImportError:
+    print("Warning: Model metrics endpoints not found.")
+    model_metrics_router = None
+
 # Initialize FastAPI
 app = FastAPI(
     title="DAO Analytics API",
@@ -78,6 +84,12 @@ if audit_router:
     print("✅ Audit log endpoints loaded successfully")
 else:
     print("⚠️ Audit endpoints not available")
+
+if model_metrics_router:
+    app.include_router(model_metrics_router)
+    print("✅ Model metrics endpoints loaded successfully")
+else:
+    print("⚠️ Model metrics endpoints not available")
 
 # Pydantic models
 class ProposalCreate(BaseModel):
