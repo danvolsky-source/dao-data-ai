@@ -39,113 +39,113 @@ SHORT_DISCLAIMER = (
 
 # Prediction-Specific Disclaimer
 PREDICTION_DISCLAIMER = (
-    "Этот прогноз основан на ML модели и исторических данных. "
-    "Точность не гарантирована. НЕ используйте для торговых решений. "
-    "Confidence score показывает уверенность модели, но не является гарантией."
+    "This prediction is based on ML model and historical data. "
+    "Accuracy is not guaranteed. DO NOT use for trading decisions. "
+    "Confidence score shows model certainty but is not a guarantee."
 )
 
 # Sentiment Analysis Disclaimer
 SENTIMENT_DISCLAIMER = (
-    "Анализ настроений основан на публичных сообщениях и может не отражать "
-    "реальное мнение всего сообщества. Используйте как один из многих факторов "
-    "в вашем исследовании. Не является инвестиционным советом."
+    "Sentiment analysis is based on public messages and may not reflect "
+    "the true opinion of the entire community. Use as one of many factors "
+    "in your research. This is not investment advice."
 )
 
 # Model Performance Disclaimer
 MODEL_DISCLAIMER = (
-    "Метрики модели основаны на бэктестинге исторических данных. "
-    "Прошлая производительность не гарантирует будущие результаты. "
-    "Модели регулярно обновляются и могут изменяться."
+    "Model metrics are based on backtesting historical data. "
+    "Past performance does not guarantee future results. "
+    "Models are regularly updated and may change."
 )
 
 # Live Tracking Disclaimer
 LIVE_TRACKING_DISCLAIMER = (
-    "Live tracking показывает фактическую производительность модели на "
-    "завершенных предложениях. Это для прозрачности и не является "
-    "гарантией будущей точности."
+    "Live tracking shows actual model performance on "
+    "completed proposals. This is for transparency and is not "
+    "a guarantee of future accuracy."
 )
 
 # Data Source Disclaimer
 DATA_SOURCE_DISCLAIMER = (
-    "Все данные получены из публичных источников: Snapshot, Tally, Discord, "
-    "форумы сообщества. Мы не гарантируем полноту или точность данных. "
-    "Всегда проверяйте информацию в первоисточниках."
+    "All data obtained from public sources: Snapshot, Tally, Discord, "
+    "community forums. We do not guarantee completeness or accuracy of data. "
+    "Always verify information from primary sources."
 )
 
 # Confidence Threshold Message
 CONFIDENCE_THRESHOLD_MESSAGE = (
-    "Прогнозы с confidence score ниже 85% могут быть недостаточно надежными. "
-    "Используйте такие прогнозы с особой осторожностью."
+    "Predictions with confidence score below 85% may be insufficiently reliable. "
+    "Use such predictions with extra caution."
 )
 
 # Terms of Service Summary
 TOS_SUMMARY = """
-УСЛОВИЯ ИСПОЛЬЗОВАНИЯ (КРАТКАЯ ВЕРСИЯ)
+TERMS OF SERVICE (SUMMARY)
 
-1. НАЗНАЧЕНИЕ СЕРВИСА
-   Платформа предназначена для анализа и исследования данных DAO.
-   Это инструмент для образования, а не для торговли.
+1. SERVICE PURPOSE
+   The platform is intended for analysis and research of DAO data.
+   This is a tool for education, not for trading.
 
-2. НЕТ ФИНАНСОВЫХ СОВЕТОВ
-   Мы не предоставляем финансовые, инвестиционные или юридические консультации.
-   Пользователи должны проконсультироваться с квалифицированными специалистами.
+2. NO FINANCIAL ADVICE
+   We do not provide financial, investment, or legal advice.
+   Users must consult with qualified professionals.
 
-3. ОГРАНИЧЕНИЕ ОТВЕТСТВЕННОСТИ
-   Мы не несем ответственности за любые убытки, возникшие в результате
-   использования платформы или доверия к предоставленной информации.
+3. LIMITATION OF LIABILITY
+   We are not responsible for any losses resulting from
+   the use of the platform or reliance on the information provided.
 
-4. ЭКСПЕРИМЕНТАЛЬНАЯ ПРИРОДА
-   ML модели и аналитика являются экспериментальными. Они могут содержать
-   ошибки и неточности. Не полагайтесь исключительно на них.
+4. EXPERIMENTAL NATURE
+   ML models and analytics are experimental. They may contain
+   errors and inaccuracies. Do not rely solely on them.
 
-5. ПУБЛИЧНЫЕ ДАННЫЕ
-   Мы используем только публично доступные данные. Пользователи несут
-   ответственность за проверку точности информации.
+5. PUBLIC DATA
+   We use only publicly available data. Users are responsible
+   for verifying the accuracy of information.
 
-6. ИЗМЕНЕНИЯ В СЕРВИСЕ
-   Мы оставляем за собой право изменять, приостанавливать или прекращать
-   любую часть сервиса в любое время без предварительного уведомления.
+6. CHANGES TO SERVICE
+   We reserve the right to modify, suspend, or terminate
+   any part of the service at any time without prior notice.
 
-Используя эту платформу, вы соглашаетесь с этими условиями.
+By using this platform, you agree to these terms.
 """
 
 # Privacy Policy Summary
 PRIVACY_SUMMARY = """
-ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ (КРАТКАЯ ВЕРСИЯ)
+PRIVACY POLICY (SUMMARY)
 
-1. СБОР ДАННЫХ
-   Мы собираем минимально необходимые данные:
-   - IP адреса (для безопасности и аудита)
-   - User agents (для технической поддержки)
-   - Запросы API (для улучшения сервиса)
-   - Wallet addresses (только если вы подключаете кошелек)
+1. DATA COLLECTION
+   We collect minimally necessary data:
+   - IP addresses (for security and audit)
+   - User agents (for technical support)
+   - API requests (to improve service)
+   - Wallet addresses (only if you connect a wallet)
 
-2. ИСПОЛЬЗОВАНИЕ ДАННЫХ
-   Данные используются для:
-   - Предоставления и улучшения сервиса
-   - Обеспечения безопасности
-   - Соблюдения требований регуляторов
-   - Аналитики и исследований
+2. DATA USAGE
+   Data is used for:
+   - Providing and improving the service
+   - Ensuring security
+   - Regulatory compliance
+   - Analytics and research
 
-3. ХРАНЕНИЕ ДАННЫХ
-   - Данные хранятся в защищенной базе данных (Supabase)
-   - Применяется шифрование при передаче и хранении
-   - Доступ ограничен авторизованным персоналом
+3. DATA STORAGE
+   - Data stored in secure database (Supabase)
+   - Encryption applied during transmission and storage
+   - Access limited to authorized personnel
 
-4. РАСКРЫТИЕ ДАННЫХ
-   Мы не продаем ваши данные третьим лицам.
-   Раскрытие возможно только:
-   - По требованию регуляторов
-   - Для предотвращения мошенничества
-   - С вашего явного согласия
+4. DATA DISCLOSURE
+   We do not sell your data to third parties.
+   Disclosure is possible only:
+   - As required by regulators
+   - To prevent fraud
+   - With your explicit consent
 
-5. ВАШИ ПРАВА
-   Вы имеете право:
-   - Запросить доступ к вашим данным
-   - Запросить удаление данных
-   - Отозвать согласие на обработку
+5. YOUR RIGHTS
+   You have the right to:
+   - Request access to your data
+   - Request data deletion
+   - Withdraw consent for processing
 
-Для вопросов по конфиденциальности: privacy@daodataai.com
+For privacy questions: privacy@daodataai.com
 """
 
 
