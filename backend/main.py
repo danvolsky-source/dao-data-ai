@@ -6,15 +6,45 @@ import os
 from datetime import datetime
 from supabase import create_client, Client
 
-# Import advanced endpoints router
+# Import API routers
 try:
     from api.advanced_endpoints import router as advanced_router
 except ImportError:
-    print("Warning: Advanced endpoints not found. Skipping advanced features integration.
+    print("Warning: Advanced endpoints not found. Skipping advanced features integration.")
     advanced_router = None
 
+try:
+    from api.predictions import router as predictions_router
+except ImportError:
+    print("Warning: Predictions endpoints not found.")
+    predictions_router = None
+
+try:
+    from api.sentiment import router as sentiment_router
+except ImportError:
+    print("Warning: Sentiment endpoints not found.")
+    sentiment_router = None
+
+try:
+    from api.audit import router as audit_router
+except ImportError:
+    print("Warning: Audit endpoints not found.")
+    audit_router = None
+
+try:
+    from api.model_metrics import router as model_metrics_router
+except ImportError:
+    print("Warning: Model metrics endpoints not found.")
+    model_metrics_router = None
+
 # Initialize FastAPI
-app = FastAPI(title="DAO Analytics API", version="1.0.0")
+app = FastAPI(
+    title="DAO Analytics API",
+    version="2.0.0",
+    description="AI-powered DAO governance analytics with ML predictions and sentiment analysis",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
 
 # CORS middleware
 app.add_middleware(
@@ -30,12 +60,36 @@ SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fsvlkshplbfivwmdljqh.supabase.
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Include advanced endpoints router
+# Include API routers
 if advanced_router:
     app.include_router(advanced_router)
-    print("✅ Advanced endpoints (ML, scoring, alerts, sentiment) loaded successfully")
+    print("✅ Advanced endpoints (ML, scoring, alerts) loaded successfully")
 else:
     print("⚠️ Advanced endpoints not available")
+
+if predictions_router:
+    app.include_router(predictions_router)
+    print("✅ Predictions endpoints loaded successfully")
+else:
+    print("⚠️ Predictions endpoints not available")
+
+if sentiment_router:
+    app.include_router(sentiment_router)
+    print("✅ Sentiment analysis endpoints loaded successfully")
+else:
+    print("⚠️ Sentiment endpoints not available")
+
+if audit_router:
+    app.include_router(audit_router)
+    print("✅ Audit log endpoints loaded successfully")
+else:
+    print("⚠️ Audit endpoints not available")
+
+if model_metrics_router:
+    app.include_router(model_metrics_router)
+    print("✅ Model metrics endpoints loaded successfully")
+else:
+    print("⚠️ Model metrics endpoints not available")
 
 # Pydantic models
 class ProposalCreate(BaseModel):
